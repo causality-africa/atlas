@@ -1,0 +1,12 @@
+<header class="bg-gray-800 shadow-lg w-full relative">
+  <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between h-16">
+      <!-- Logo/Brand -->
+      <div class="flex items-center">
+        <h1 class="text-xl font-bold text-white">{{ site.Title }}</h1>
+      </div>
+      <!-- Navigation Menu -->
+      {{ partial "menu.html" (dict "menuID" "main" "page" .) }}
+    </div>
+  </div>
+</header>

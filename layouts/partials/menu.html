@@ -1,0 +1,35 @@
+<nav class="flex items-center">
+  <!-- Mobile menu button -->
+  <div class="md:hidden">
+    <button type="button" class="text-gray-300 hover:text-white" onclick="toggleMenu()">
+      <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Desktop menu -->
+  <div class="hidden md:flex md:space-x-8">
+    <a href='{{ "articles" | relLangURL }}' class="text-gray-300 hover:text-white">Articles</a>
+    <a href='{{ "explore" | relLangURL }}' class="text-gray-300 hover:text-white">Explore</a>
+    <a href='{{ "developers" | relLangURL }}' class="text-gray-300 hover:text-white">Developers</a>
+    <a href='{{ "about" | relLangURL }}' class="text-gray-300 hover:text-white">About</a>
+  </div>
+
+  <!-- Mobile menu panel -->
+  <div id="mobile-menu" class="hidden absolute top-16 left-0 w-full bg-gray-800 md:hidden">
+    <div class="px-2 pt-2 pb-3 space-y-1">
+      <a href='{{ "articles" | relLangURL }}' class="block px-3 py-2 text-gray-300 hover:text-white">Articles</a>
+      <a href='{{ "explore" | relLangURL }}' class="block px-3 py-2 text-gray-300 hover:text-white">Explore</a>
+      <a href='{{ "developers" | relLangURL }}' class="block px-3 py-2 text-gray-300 hover:text-white">Developers</a>
+      <a href='{{ "about" | relLangURL }}' class="block px-3 py-2 text-gray-300 hover:text-white">About</a>
+    </div>
+  </div>
+</nav>
+
+<script>
+function toggleMenu() {
+  const menu = document.getElementById('mobile-menu');
+  menu.classList.toggle('hidden');
+}
+</script>
