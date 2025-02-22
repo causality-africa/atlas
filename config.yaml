@@ -1,0 +1,82 @@
+baseURL: "https://causality.africa/"
+title: "Causality.Africa"
+rssLimit: 25
+enableGitInfo: true
+
+defaultContentLanguage: en
+defaultContentLanguageInSubdir: true
+languages:
+  en:
+    contentDir: content/en
+    disabled: false
+    languageCode: en
+    languageDirection: ltr
+    languageName: English
+    params:
+      description: "Africa's story, told through data ❤️"
+    weight: 1
+  fr:
+    contentDir: content/fr
+    disabled: true
+    languageCode: fr
+    languageDirection: ltr
+    languageName: français
+    params:
+      description: "Africa's story, told through data ❤️"
+    weight: 2
+  sw:
+    contentDir: content/sw
+    disabled: true
+    languageCode: sw
+    languageDirection: ltr
+    languageName: Kiswahili
+    params:
+      description: "Africa's story, told through data ❤️"
+    weight: 3
+  ar:
+    contentDir: content/ar
+    disabled: true
+    languageCode: ar
+    languageDirection: rtl
+    languageName: العربية
+    params:
+      description: "Africa's story, told through data ❤️"
+    weight: 4
+
+taxonomies:
+  topic: "topics"
+
+menus:
+  main:
+    - name: "Home"
+      pageRef: "/"
+      weight: 10
+    - name: "Articles"
+      pageRef: "/articles"
+      weight: 20
+    - name: "Explore"
+      pageRef: "/explore"
+      weight: 30
+    - name: "About"
+      pageRef: "/about"
+      weight: 40
+
+build:
+  buildStats:
+    enable: true
+  cachebusters:
+  - source: assets/notwatching/hugo_stats\.json
+    target: css
+  - source: (postcss|tailwind)\.config\.js
+    target: css
+
+module:
+  hugoVersion:
+    extended: false
+    min: "0.116.0"
+  mounts:
+  - source: assets
+    target: assets
+  - disableWatch: true
+    source: hugo_stats.json
+    target: assets/notwatching/hugo_stats.json
