@@ -6,4 +6,4 @@ It started with a simple question that proved surprisingly difficult to answer: 
 
 That frustrating search made something clear: some of the most fundamental data about Africa remains fragmented and inaccessible. Without clear, comprehensive data, we default to oversimplified narratives that fail to capture the diversity and nuance across 54 distinct countries, thousands of ethnic groups, and vastly different economic and social contexts.
 
-Causality.Africa brings this scattered data to life through visualization. We gather data from across the continent, transform it into clear visual stories, and make it accessible to the citizens of this beautiful continent.
+Causality brings this scattered data to life through visualization. We gather data from across the continent, transform it into clear visual stories, and make it accessible to the citizens of this beautiful continent.

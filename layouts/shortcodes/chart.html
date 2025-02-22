@@ -1,0 +1,53 @@
+{{ $type := .Get "type" | default "line" }}
+
+{{ $title := .Get "title" }}
+{{ $description := .Get "description" }}
+{{ $note := .Get "note" }}
+
+{{ $xIndicator := .Get "x-indicator" }}
+{{ $xLabel := .Get "x-label" }}
+{{ $xScale := .Get "x-scale" | default "linear" }}
+
+{{ $yIndicator := .Get "y-indicator" }}
+{{ $yLabel := .Get "y-label" }}
+{{ $yScale := .Get "y-scale" | default "linear" }}
+
+{{ $sizeIndicator := .Get "size-indicator" }}
+{{ $sizeScale := .Get "size-scale" | default "sqrt" }}
+{{ $sizeRange := .Get "size-range" | default "[4,40]" }}
+
+{{ $colorBy := .Get "color-by" }}
+{{ $colorScheme := .Get "color-scheme" | default "some-scheme" }}
+
+{{ $timeStart := .Get "time-start" }}
+{{ $timeEnd := .Get "time-end" }}
+{{ $timeInterval := .Get "time-interval" | default "year" }}
+
+{{ $locations := .Get "locations" }}
+{{ $regions := .Get "regions" }}
+
+{{ $slider := .Get "slider" | default "true" }}
+
+<div class="chart-container w-full h-[400px] md:h-[600px] bg-white"
+    data-type="{{ $type }}"
+    data-title="{{ $title }}"
+    data-description="{{ $description }}"
+    data-note="{{ $note }}"
+    data-x-indicator="{{ $xIndicator }}"
+    data-x-label="{{ $xLabel }}"
+    data-x-scale="{{ $xScale }}"
+    data-y-indicator="{{ $yIndicator }}"
+    data-y-label="{{ $yLabel }}"
+    data-y-scale="{{ $yScale }}"
+    data-size-indicator="{{ $sizeIndicator }}"
+    data-size-scale="{{ $sizeScale }}"
+    data-size-range="{{ $sizeRange }}"
+    data-color-by="{{ $colorBy }}"
+    data-color-scheme="{{ $colorScheme }}"
+    data-time-start="{{ $timeStart }}"
+    data-time-end="{{ $timeEnd }}"
+    data-time-interval="{{ $timeInterval }}"
+    data-locations="{{ $locations }}"
+    data-regions="{{ $regions }}"
+    data-slider="{{ $slider }}"
+></div>
