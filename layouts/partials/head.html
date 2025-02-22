@@ -1,5 +1,10 @@
+<title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ printf "%s | %s" .Title site.Title }}{{ end }}</title>
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width">
-<title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ printf "%s | %s" .Title site.Title }}{{ end }}</title>
+
+<link href="/images/logo.png" rel="icon" media="(prefers-color-scheme: light)">
+<link href="/images/logo-light.png" rel="icon" media="(prefers-color-scheme: dark)">
+
 {{ partialCached "head/css.html" . }}
 {{ partialCached "head/js.html" . }}
