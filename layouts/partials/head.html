@@ -2,6 +2,10 @@
 
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width">
+<meta name="description"
+    content="{{ with .Summary }}{{ . }}{{ else }}{{ .Site.Params.description }}{{ end }}">
+<meta property="og:site_name" content="{{ .Site.Title }}">
+<meta property="og:title" content="{{ .Title }}">
 
 <link href="/images/logo.png" rel="icon" media="(prefers-color-scheme: light)">
 <link href="/images/logo-light.png" rel="icon" media="(prefers-color-scheme: dark)">

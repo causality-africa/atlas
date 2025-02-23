@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 {
                     type: "text",
                     left: 25,
-                    bottom: 30,
+                    bottom: 20,
                     style: {
                         text: [
                             "{bold|Note:}",

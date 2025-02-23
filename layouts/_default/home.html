@@ -1,4 +1,9 @@
 {{ define "main" }}
+  <div itemscope itemtype="https://schema.org/WebSite">
+    <link itemprop="url" href="{{ .Site.BaseURL }}" />
+    <meta itemprop="name" content="{{ .Site.Title }}" />
+  </div>
+
   {{ .Content }}
   {{ range site.RegularPages }}
     <h2><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
