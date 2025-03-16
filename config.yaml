@@ -4,10 +4,8 @@ rssLimit: 25
 enableGitInfo: true
 
 defaultContentLanguage: en
-defaultContentLanguageInSubdir: true
 languages:
   en:
-    contentDir: content/en
     disabled: false
     languageCode: en
     languageDirection: ltr
@@ -16,7 +14,6 @@ languages:
       description: "Africa's story, told through data ❤️"
     weight: 1
   fr:
-    contentDir: content/fr
     disabled: true
     languageCode: fr
     languageDirection: ltr
@@ -25,7 +22,6 @@ languages:
       description: "Africa's story, told through data ❤️"
     weight: 2
   sw:
-    contentDir: content/sw
     disabled: true
     languageCode: sw
     languageDirection: ltr
@@ -34,7 +30,6 @@ languages:
       description: "Africa's story, told through data ❤️"
     weight: 3
   ar:
-    contentDir: content/ar
     disabled: true
     languageCode: ar
     languageDirection: rtl
