@@ -1,0 +1,19 @@
+---
+title: "Life Expectancy at Birth"
+summary: "Average number of years a newborn is expected to live"
+date: 2025-04-03T20:02:30+03:00
+type: chart
+---
+
+{{< chart
+    type="line"
+    title="Life Expectancy"
+    description="Average number of years a newborn is expected to live."
+    x-indicator="year"
+    x-label="Year"
+    y-indicator="life-expectancy"
+    y-label="Number of years"
+    time-start="1950"
+    time-end="2031"
+    locations="CD,EG,ET,KE,MA,MU,NG,RW,TD,ZA"
+>}}

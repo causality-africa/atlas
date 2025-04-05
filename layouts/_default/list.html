@@ -1,8 +1,23 @@
 {{ define "main" }}
-  <h1>{{ .Title }}</h1>
-  {{ .Content }}
-  {{ range .Pages }}
-    <h2><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></h2>
-    {{ .Summary }}
-  {{ end }}
+  <main class="max-w-7xl mx-auto pt-2 prose prose-lg">
+    <h1 class="text-4xl font-bold">{{ .Title }}</h1>
+
+    <h2>Articles</h2>
+    {{ range .Pages }}
+      {{ if eq .Type "article"}}
+        <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>:
+        {{ .Summary }}
+      {{ end }}
+    {{ end }}
+
+    <h2>Data</h2>
+    {{ range .Pages }}
+      {{ if eq .Type "chart"}}
+        <p>
+          <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>:
+          {{ .Summary }}
+        </p>
+      {{ end }}
+    {{ end }}
+  </main>
 {{ end }}
