@@ -1,23 +1,75 @@
 {{ define "main" }}
-  <main class="max-w-7xl mx-auto pt-2 prose prose-lg">
-    <h1 class="text-4xl font-bold">{{ .Title }}</h1>
+<main class="max-w-7xl mx-auto py-6 px-4 prose prose-lg">
+  <h2 class="text-4xl font-bold">{{ .Title }}</h1>
 
-    <h2>Articles</h2>
-    {{ range .Pages }}
-      {{ if eq .Type "article"}}
-        <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>:
-        {{ .Summary }}
+    {{ $sortedCharts := (where .Pages "Type" "chart").ByTitle }}
+    {{ if $sortedCharts }}
+    {{ $paginator := .Paginate $sortedCharts 10 }}
+    <ul class="space-y-4 list-none pl-0">
+      {{ range $paginator.Pages }}
+      <li class="border-l-4 border-gray-300 pl-4 hover:border-gray-500 transition-colors">
+        <a href="{{ .RelPermalink }}" class="text-xl font-medium no-underline hover:underline">{{ .LinkTitle }}</a>
+        <p class="mt-1 text-gray-600">{{ .Summary }}</p>
+      </li>
       {{ end }}
+    </ul>
+
+    <div class="pagination flex justify-center items-center space-x-2 mt-8 py-4 text-sm">
+      {{ if $paginator.HasPrev }}
+        <a href="{{ $paginator.Prev.URL }}"
+          class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 no-underline">
+          <i class="fas fa-chevron-left"></i> <span class="sr-only">Previous</span>
+        </a>
+      {{ else }}
+        <span class="px-4 py-2 border border-gray-200 rounded text-gray-400 cursor-not-allowed">
+          <i class="fas fa-chevron-left"></i> <span class="sr-only">Previous</span>
+        </span>
+      {{ end }}
+
+      {{ $currentPage := $paginator.PageNumber }}
+      {{ $totalPages := $paginator.TotalPages }}
+
+      {{ if gt $currentPage 3 }}
+        <a href="{{ $paginator.First.URL }}"
+          class="px-3 py-2 border border-gray-300 rounded hover:bg-gray-100 no-underline">1</a>
+        {{ if gt $currentPage 4 }}
+          <span class="px-2">...</span>
+        {{ end }}
+      {{ end }}
+
+      {{ range $paginator.Pagers }}
+        {{ if and (ge .PageNumber (sub $currentPage 2)) (le .PageNumber (add $currentPage 2)) }}
+          {{ if eq .PageNumber $currentPage }}
+            <span class="px-3 py-2 border border-gray-500 bg-gray-200 rounded font-medium">{{ .PageNumber }}</span>
+          {{ else }}
+            <a href="{{ .URL }}" class="px-3 py-2 border border-gray-300 rounded hover:bg-gray-100 no-underline">{{
+            .PageNumber }}</a>
+          {{ end }}
+        {{ end }}
+      {{ end }}
+
+      {{ if lt $currentPage (sub $totalPages 2) }}
+        {{ if lt $currentPage (sub $totalPages 3) }}
+          <span class="px-2">...</span>
+        {{ end }}
+          <a href="{{ $paginator.Last.URL }}"
+            class="px-3 py-2 border border-gray-300 rounded hover:bg-gray-100 no-underline">{{ $totalPages }}</a>
+      {{ end }}
+
+      {{ if $paginator.HasNext }}
+        <a href="{{ $paginator.Next.URL }}"
+          class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 no-underline">
+          <i class="fas fa-chevron-right"></i> <span class="sr-only">Next</span>
+        </a>
+      {{ else }}
+        <span class="px-4 py-2 border border-gray-200 rounded text-gray-400 cursor-not-allowed">
+          <i class="fas fa-chevron-right"></i> <span class="sr-only">Next</span>
+        </span>
+      {{ end }}
+    </div>
+    {{ else }}
+      <p class="italic text-gray-500">This section is left as an exercise for the reader :).</p>
     {{ end }}
 
-    <h2>Data</h2>
-    {{ range .Pages }}
-      {{ if eq .Type "chart"}}
-        <p>
-          <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>:
-          {{ .Summary }}
-        </p>
-      {{ end }}
-    {{ end }}
-  </main>
+</main>
 {{ end }}

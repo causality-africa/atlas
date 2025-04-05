@@ -1,43 +1,14 @@
-const API_URL = "https://api.causality.africa/v1"
+const API_URL = "https://api.causality.africa/v1";
 
-async function getDataPoints(indicator, start, end, locationCodes) {
-    const locationsStr = locationCodes.join(",");
-    const startStr = start.toISOString().split("T")[0];
-    const endStr = end.toISOString().split("T")[0];
-    const queryStr = `/query?indicator=${indicator}&start=${startStr}&end=${endStr}&locations=${locationsStr}`;
-
-    try {
-        const locationNames = {};
-        await Promise.all(locationCodes.map(async (code) => {
-            const locResponse = await fetch(`${API_URL}/locations/${code}`);
-            if (locResponse.ok) {
-                const locData = await locResponse.json();
-                locationNames[code] = locData.name;
-            } else {
-                locationNames[code] = code;
-            }
-        }))
-
-        const dataResponse = await fetch(API_URL + queryStr);
-        if (!dataResponse.ok) {
-            throw new Error(`API request failed with status ${dataResponse.status}`);
-        }
-
-        const dataset = [];
-        const rawData = await dataResponse.json();
-        for (const locationCode in rawData) {
-            dataset.push({
-                location: locationNames[locationCode] || locationCode,
-                data: rawData[locationCode].map(point => point.numeric_value)
-            });
-        }
-
-        return dataset;
-    } catch (error) {
-        console.error("Error fetching data:", error);
-        throw error;
+document.addEventListener("DOMContentLoaded", async () => {
+    const wrapperEls = document.getElementsByClassName("chart-container-wrapper");
+    for (const wrapperEl of wrapperEls) {
+        renderChart(wrapperEl);
     }
-}
+});
+
+
+// Chart handlers
 
 async function renderChart(wrapperEl) {
     const chartContainerEl = wrapperEl.querySelector(".chart-container");
@@ -50,7 +21,7 @@ async function renderChart(wrapperEl) {
     const timeEnd = new Date(chartEl.dataset.timeEnd);
 
     const dataset = await getDataPoints(
-        chartEl.dataset.yIndicator,
+        chartEl.dataset.indicator,
         timeStart,
         timeEnd,
         locationCodes,
@@ -70,7 +41,7 @@ async function renderChart(wrapperEl) {
 
         const label = document.createElement("label");
         label.htmlFor = data.location;
-        label.className = "text-gray-800";
+        label.className = "text-sm text-gray-600";
         label.textContent = data.location;
 
         container.appendChild(checkbox);
@@ -129,7 +100,7 @@ async function renderChart(wrapperEl) {
         htmlToImage
             .toBlob(chartContainerEl, renderingOptions)
             .then((blob) => {
-                saveAs(blob, `${chartEl.dataset.yIndicator}.png`);
+                saveAs(blob, `${chartEl.dataset.indicator}.png`);
             })
             .catch((err) => {
                 console.error("Failed to save image", err);
@@ -172,9 +143,43 @@ async function renderChart(wrapperEl) {
     }
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-    const wrapperEls = document.getElementsByClassName("chart-container-wrapper");
-    for (const wrapperEl of wrapperEls) {
-        renderChart(wrapperEl);
+// Utilities
+
+async function getDataPoints(indicator, start, end, locationCodes) {
+    const locationsStr = locationCodes.join(",");
+    const startStr = start.toISOString().split("T")[0];
+    const endStr = end.toISOString().split("T")[0];
+    const queryStr = `/query?indicator=${indicator}&start=${startStr}&end=${endStr}&locations=${locationsStr}`;
+
+    try {
+        const locationNames = {};
+        await Promise.all(locationCodes.map(async (code) => {
+            const locResponse = await fetch(`${API_URL}/locations/${code}`);
+            if (locResponse.ok) {
+                const locData = await locResponse.json();
+                locationNames[code] = locData.name;
+            } else {
+                locationNames[code] = code;
+            }
+        }))
+
+        const dataResponse = await fetch(API_URL + queryStr);
+        if (!dataResponse.ok) {
+            throw new Error(`API request failed with status ${dataResponse.status}`);
+        }
+
+        const dataset = [];
+        const rawData = await dataResponse.json();
+        for (const locationCode in rawData) {
+            dataset.push({
+                location: locationNames[locationCode] || locationCode,
+                data: rawData[locationCode].map(point => point.numeric_value)
+            });
+        }
+
+        return dataset;
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        throw error;
     }
-});
+}

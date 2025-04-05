@@ -8,11 +8,11 @@ build:
 
 .PHONY: article
 article:
-	hugo new --kind article content/$(filter-out $@,$(MAKECMDGOALS)).md
+	hugo new --kind article content/articles/$(filter-out $@,$(MAKECMDGOALS)).md
 
-.PHONY: chart
-chart:
-	hugo new --kind chart content/$(filter-out $@,$(MAKECMDGOALS)).md
+.PHONY: line-chart
+line-chart:
+	hugo new --kind line-chart content/$(filter-out $@,$(MAKECMDGOALS)).md
 
 %:
 	@:
