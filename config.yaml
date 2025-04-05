@@ -38,8 +38,7 @@ languages:
       description: "Africa's story, told through data ❤️"
     weight: 4
 
-taxonomies:
-  topic: "topics"
+taxonomies: {}
 
 menus:
   main:
@@ -49,8 +48,8 @@ menus:
     - name: "Articles"
       pageRef: "/articles"
       weight: 20
-    - name: "Explore"
-      pageRef: "/explore"
+    - name: "Data"
+      pageRef: "/data"
       weight: 30
     - name: "About"
       pageRef: "/about"

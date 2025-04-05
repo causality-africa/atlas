@@ -27,8 +27,8 @@
 {{ $regions := .Get "regions" }}
 
 <div class="max-w-full mx-auto border border-gray-100">
-    <div class="flex flex-col md:flex-row">
-        <div id="chart-container-wrapper" class="p-2 md:w-3/4">
+    <div class="chart-container-wrapper flex flex-col md:flex-row">
+        <div class="chart-container p-2 md:w-3/4">
             <!-- Header section -->
             <div class="flex flex-row">
                 <div class="flex-grow">
@@ -41,8 +41,8 @@
                 </div>
             </div>
 
-            <!-- Chart container -->
-            <div id="chart-container" class="w-full h-[30rem]" data-type="{{ $type }}" data-title="{{ $title }}"
+            <!-- Chart -->
+            <div class="chart w-full h-[30rem]" data-type="{{ $type }}" data-title="{{ $title }}"
                 data-description="{{ $description }}" data-note="{{ $note }}" data-x-indicator="{{ $xIndicator }}"
                 data-x-label="{{ $xLabel }}" data-x-scale="{{ $xScale }}" data-y-indicator="{{ $yIndicator }}"
                 data-y-label="{{ $yLabel }}" data-y-scale="{{ $yScale }}" data-size-indicator="{{ $sizeIndicator }}"
@@ -55,14 +55,14 @@
             <!-- Data source section -->
             <div class="md:w-full mt-5">
                 <p class="text-sm text-gray-600">
-                    <span class="font-semibold">Source: </span>United Nations (2025)
+                    <span class="font-semibold">Source: </span><span class="source"></span>
                 </p>
                 <p class="text-sm text-gray-600 mt-1">causality.africa{{ strings.TrimSuffix "/" .Page.RelPermalink }} |
                     CC BY 4.0</p>
             </div>
         </div>
 
-        <div class="md:w-1/4 border-l border-gray-100 p-2">
+        <div class="side-panel md:w-1/4 border-l border-gray-100 p-2">
             <h2 class="text-xs text-gray-600 font-semibold py-2">VISUALIZATION</h2>
             <!-- Tab navigation -->
             <div class="flex w-full">
@@ -75,15 +75,15 @@
                     <i class="fa-solid fa-chart-line"></i>&nbsp;
                     CHART
                 </button>
-                <button id="save-chart"
-                    class="flex-1 px-4 py-2 text-xs border border-gray-300 border-l-0 rounded-r-md hover:bg-gray-100 cursor-pointer">
+                <button
+                    class="save-chart flex-1 px-4 py-2 text-xs border border-gray-300 border-l-0 rounded-r-md hover:bg-gray-100 cursor-pointer">
                     <i class="fa-solid fa-download"></i>&nbsp;
                     SAVE
                 </button>
             </div>
 
             <!-- Country selection panel -->
-            <div class="hidden md:block mt-2">
+            <div class="selection-panel hidden md:block mt-2">
                 <h2 class="text-xs text-gray-600 font-semibold py-2">SELECT COUNTRIES AND REGIONS</h2>
 
                 <!-- Search input -->
@@ -100,7 +100,7 @@
                 </div>
 
                 <!-- Selected locations section -->
-                <div id="selected-locations" class="h-[27rem] overflow-y-auto divide-y divide-gray-200">
+                <div class="selected-locations h-[27rem] overflow-y-auto divide-y divide-gray-200">
                 </div>
             </div>
         </div>

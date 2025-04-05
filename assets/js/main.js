@@ -1,65 +1,62 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const chartContainer = document.getElementById("chart-container");
-    const chart = echarts.init(chartContainer, null, { renderer: "svg" });
+const API_URL = "https://api.causality.africa/v1"
 
-    const dataset = [
-        {
-            location: "Kenya",
-            data: Array.from({ length: 65 }, (_, i) => {
-                const baseValue = 1000 + (i * 45);
-                const volatility = Math.sin(i * 0.5) * 400 + (Math.random() - 0.5) * 300;
-                const crisis = i % 15 === 0 ? -400 : (i % 20 === 0 ? 500 : 0);
-                return Math.max(100, Math.round(baseValue + volatility + crisis));
-            })
-        },
-        {
-            location: "Ethiopia",
-            data: Array.from({ length: 65 }, (_, i) => {
-                const baseValue = 300 + (i * 25);
-                const volatility = Math.cos(i * 0.4) * 350 + (Math.random() - 0.5) * 250;
-                const crisis = i % 12 === 0 ? -300 : (i % 18 === 0 ? 400 : 0);
-                return Math.max(100, Math.round(baseValue + volatility + crisis));
-            })
-        },
-        {
-            location: "Sub Saharan Africa",
-            data: Array.from({ length: 65 }, (_, i) => {
-                const baseValue = 600 + (i * 40);
-                const volatility = Math.sin(i * 0.3) * 450 + (Math.random() - 0.5) * 400;
-                const crisis = i % 14 === 0 ? -500 : (i % 19 === 0 ? 600 : 0);
-                return Math.max(200, Math.round(baseValue + volatility + crisis));
-            })
-        },
-        {
-            location: "South Africa",
-            data: Array.from({ length: 65 }, (_, i) => {
-                const baseValue = 2000 + (i * 100);
-                const volatility = Math.sin(i * 0.6) * 800 + (Math.random() - 0.5) * 600;
-                const crisis = i % 16 === 0 ? -800 : (i % 21 === 0 ? 1000 : 0);
-                return Math.max(500, Math.round(baseValue + volatility + crisis));
-            })
-        },
-        {
-            location: "Rwanda",
-            data: Array.from({ length: 65 }, (_, i) => {
-                const baseValue = 400 + (i * 20);
-                const volatility = Math.cos(i * 0.7) * 300 + (Math.random() - 0.5) * 200;
-                const crisis = i % 13 === 0 ? -250 : (i % 17 === 0 ? 350 : 0);
-                return Math.max(100, Math.round(baseValue + volatility + crisis));
-            })
-        },
-        {
-            location: "Egypt",
-            data: Array.from({ length: 65 }, (_, i) => {
-                const baseValue = 1000 + (i * 50);
-                const volatility = Math.sin(i * 0.45) * 500 + (Math.random() - 0.5) * 400;
-                const crisis = i % 15 === 0 ? -600 : (i % 20 === 0 ? 700 : 0);
-                return Math.max(300, Math.round(baseValue + volatility + crisis));
-            })
+async function getDataPoints(indicator, start, end, locationCodes) {
+    const locationsStr = locationCodes.join(",");
+    const startStr = start.toISOString().split("T")[0];
+    const endStr = end.toISOString().split("T")[0];
+    const queryStr = `/query?indicator=${indicator}&start=${startStr}&end=${endStr}&locations=${locationsStr}`;
+
+    try {
+        const locationNames = {};
+        await Promise.all(locationCodes.map(async (code) => {
+            const locResponse = await fetch(`${API_URL}/locations/${code}`);
+            if (locResponse.ok) {
+                const locData = await locResponse.json();
+                locationNames[code] = locData.name;
+            } else {
+                locationNames[code] = code;
+            }
+        }))
+
+        const dataResponse = await fetch(API_URL + queryStr);
+        if (!dataResponse.ok) {
+            throw new Error(`API request failed with status ${dataResponse.status}`);
         }
-    ];
 
-    const selectedLocationsEl = document.getElementById("selected-locations");
+        const dataset = [];
+        const rawData = await dataResponse.json();
+        for (const locationCode in rawData) {
+            dataset.push({
+                location: locationNames[locationCode] || locationCode,
+                data: rawData[locationCode].map(point => point.numeric_value)
+            });
+        }
+
+        return dataset;
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        throw error;
+    }
+}
+
+async function renderChart(wrapperEl) {
+    const chartContainerEl = wrapperEl.querySelector(".chart-container");
+    const chartEl = chartContainerEl.querySelector(".chart");
+
+    const chart = echarts.init(chartEl, null, { renderer: "svg" });
+
+    const locationCodes = chartEl.dataset.locations.split(",");
+    const timeStart = new Date(chartEl.dataset.timeStart);
+    const timeEnd = new Date(chartEl.dataset.timeEnd);
+
+    const dataset = await getDataPoints(
+        chartEl.dataset.yIndicator,
+        timeStart,
+        timeEnd,
+        locationCodes,
+    );
+
+    const selectedLocationsEl = wrapperEl.querySelector(".selected-locations");
     dataset.forEach(data => {
         const container = document.createElement("div");
         container.className = "flex items-center p-3";
@@ -92,9 +89,17 @@ document.addEventListener("DOMContentLoaded", () => {
             containLabel: true,
         },
         xAxis: {
-            data: Array.from({ length: 65 }, (_, i) => 1960 + i),
+            data: Array.from(
+                { length: timeEnd.getFullYear() - timeStart.getFullYear() + 1 },
+                (_, i) => timeStart.getFullYear() + i,
+            ),
         },
         yAxis: {
+            min: (value) => {
+                const range = value.max - value.min;
+                const magnitude = Math.pow(10, Math.floor(Math.log10(range)));
+                return Math.floor(value.min / magnitude) * magnitude;
+            },
             splitLine: {
                 lineStyle: {
                     type: "dashed",
@@ -118,14 +123,13 @@ document.addEventListener("DOMContentLoaded", () => {
         chart.resize();
     });
 
-    document.getElementById("save-chart").addEventListener("click", () => {
-        const chartContainerWrapper = document.getElementById("chart-container-wrapper");
+    wrapperEl.querySelector(".save-chart").addEventListener("click", () => {
         const renderingOptions = { pixelRatio: 5, backgroundColor: "#fff" };
 
         htmlToImage
-            .toBlob(chartContainerWrapper, renderingOptions)
+            .toBlob(chartContainerEl, renderingOptions)
             .then((blob) => {
-                saveAs(blob, `${chartContainer.dataset.yIndicator}.png`);
+                saveAs(blob, `${chartEl.dataset.yIndicator}.png`);
             })
             .catch((err) => {
                 console.error("Failed to save image", err);
@@ -133,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     function generateSeries(initial = false) {
-        const selectedLocations = Array.from(document.querySelectorAll("#selected-locations input:checked"))
+        const selectedLocations = Array.from(selectedLocationsEl.querySelectorAll("input:checked"))
             .map(input => input.id);
 
         const filteredSeries = dataset
@@ -160,13 +164,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 },
             }));
 
-        console.log(initial)
-
         if (!initial) {
-            console.log(filteredSeries)
             chart.setOption({ series: filteredSeries }, { replaceMerge: ["series"] });
         }
 
         return filteredSeries;
+    }
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+    const wrapperEls = document.getElementsByClassName("chart-container-wrapper");
+    for (const wrapperEl of wrapperEls) {
+        renderChart(wrapperEl);
     }
 });

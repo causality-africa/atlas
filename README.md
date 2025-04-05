@@ -1,5 +1,7 @@
 # Atlas
 
+Data visualization and storytelling platform.
+
 ## Licensing
 
 This project uses dual licensing:

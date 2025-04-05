@@ -4,8 +4,9 @@ subtitle: ""
 summary: ""
 date: {{ .Date }}
 draft: true
-topics:
-    - topic
+type: article
+authors:
+    - Jane Doe
 ---
 
-Article!
+Article.
