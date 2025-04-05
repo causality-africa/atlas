@@ -1,9 +1,22 @@
 {{ define "main" }}
-  <div itemscope itemtype="https://schema.org/WebSite">
-    <link itemprop="url" href="{{ .Site.BaseURL }}" />
-    <meta itemprop="name" content="{{ .Site.Title }}" />
-  </div>
+<div itemscope itemtype="https://schema.org/WebSite">
+  <link itemprop="url" href="{{ .Site.BaseURL }}" />
+  <meta itemprop="name" content="{{ .Site.Title }}" />
+</div>
 
-  {{ .Content }}
-
+<main class="max-w-7xl mx-auto py-8 px-4 prose prose-lg">
+  {{ $articles := where .Site.RegularPages "Type" "article" }}
+  {{ if $articles }}
+  <ul class="space-y-4 list-none pl-0">
+    {{ range (sort $articles "Date" "desc") }}
+    <li class="border-l-4 border-gray-300 pl-4 hover:border-gray-500 transition-colors">
+      <a href="{{ .RelPermalink }}" class="text-xl font-medium no-underline hover:underline">{{ .LinkTitle }}</a>
+      <p class="mt-1 text-gray-600">{{ .Summary }}</p>
+    </li>
+    {{ end }}
+  </ul>
+  {{ else }}
+  <p class="italic text-gray-500">No articles published yet. Check back soon!</p>
+  {{ end }}
+</main>
 {{ end }}

@@ -1,17 +1,46 @@
-<!-- Topics Section -->
-<div class="hidden md:block bg-gray-50 py-12">
+<div class="bg-gray-50 py-12">
   <div class="max-w-7xl mx-auto px-4">
-    <!-- Topics Grid -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
       <!-- Economy -->
       <div>
         <h3 class="text-lg font-semibold mb-4">Economy</h3>
         <ul class="space-y-2">
-          <li><a href='{{ "economic-growth" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Economic Growth</a></li>
-          <li><a href='{{ "employment" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Employment</a></li>
-          <li><a href='{{ "business-environment" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Business Environment</a></li>
-          <li><a href='{{ "trade" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Trade</a></li>
-          <li><a href='{{ "finance" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Finance</a></li>
+          <li>
+            <a href='{{ "economic-growth" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Economic Growth</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "economic-growth").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "employment" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Employment</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "employment").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "business-environment" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Business
+              Environment</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "business-environment").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "trade" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Trade</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "trade").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "finance" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Finance</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "finance").Pages }}
+            </span>
+          </li>
         </ul>
       </div>
 
@@ -19,11 +48,41 @@
       <div>
         <h3 class="text-lg font-semibold mb-4">Industry</h3>
         <ul class="space-y-2">
-          <li><a href='{{ "manufacturing" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Manufacturing</a></li>
-          <li><a href='{{ "agriculture" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Agriculture</a></li>
-          <li><a href='{{ "technology" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Technology</a></li>
-          <li><a href='{{ "tourism" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Tourism</a></li>
-          <li><a href='{{ "mining" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Mining</a></li>
+          <li>
+            <a href='{{ "manufacturing" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Manufacturing</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "manufacturing").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "agriculture" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Agriculture</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "agriculture").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "technology" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Technology</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "technology").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "tourism" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Tourism</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "tourism").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "mining" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Mining</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "mining").Pages }}
+            </span>
+          </li>
         </ul>
       </div>
 
@@ -31,11 +90,42 @@
       <div>
         <h3 class="text-lg font-semibold mb-4">Health</h3>
         <ul class="space-y-2">
-          <li><a href='{{ "healthcare-access" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Healthcare Access</a></li>
-          <li><a href='{{ "diseases" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Diseases</a></li>
-          <li><a href='{{ "nutrition" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Nutrition</a></li>
-          <li><a href='{{ "public-health" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Public Health</a></li>
-          <li><a href='{{ "wellbeing" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Wellbeing</a></li>
+          <li>
+            <a href='{{ "healthcare-access" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Healthcare
+              Access</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "healthcare-access").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "diseases" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Diseases</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "diseases").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "nutrition" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Nutrition</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "nutrition").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "public-health" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Public Health</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "public-health").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "wellbeing" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Wellbeing</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "wellbeing").Pages }}
+            </span>
+          </li>
         </ul>
       </div>
 
@@ -43,11 +133,41 @@
       <div>
         <h3 class="text-lg font-semibold mb-4">Infrastructure</h3>
         <ul class="space-y-2">
-          <li><a href='{{ "energy" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Energy</a></li>
-          <li><a href='{{ "water" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Water</a></li>
-          <li><a href='{{ "transportation" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Transportation</a></li>
-          <li><a href='{{ "housing" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Housing</a></li>
-          <li><a href='{{ "construction" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Construction</a></li>
+          <li>
+            <a href='{{ "energy" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Energy</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "energy").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "water" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Water</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "water").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "transportation" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Transportation</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "transportation").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "housing" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Housing</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "housing").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "construction" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Construction</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "construction").Pages }}
+            </span>
+          </li>
         </ul>
       </div>
 
@@ -55,11 +175,44 @@
       <div>
         <h3 class="text-lg font-semibold mb-4">Governance</h3>
         <ul class="space-y-2">
-          <li><a href='{{ "public-finance" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Public Finance</a></li>
-          <li><a href='{{ "political-systems" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Political Systems</a></li>
-          <li><a href='{{ "rule-of-law" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Rule of Law</a></li>
-          <li><a href='{{ "public-administration" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Public Administration</a></li>
-          <li><a href='{{ "international-relations" | relLangURL }}' class="text-gray-600 hover:text-gray-900">International Relations</a></li>
+          <li>
+            <a href='{{ "public-finance" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Public Finance</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "public-finance").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "political-systems" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Political
+              Systems</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "political-systems").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "rule-of-law" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Rule of Law</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "rule-of-law").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "public-administration" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Public
+              Administration</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "public-administration").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "international-relations" | relLangURL }}'
+              class="text-gray-600 hover:text-gray-900">International Relations</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "international-relations").Pages }}
+            </span>
+          </li>
         </ul>
       </div>
 
@@ -67,11 +220,41 @@
       <div>
         <h3 class="text-lg font-semibold mb-4">Human Development</h3>
         <ul class="space-y-2">
-          <li><a href='{{ "education" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Education</a></li>
-          <li><a href='{{ "human-rights" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Human Rights</a></li>
-          <li><a href='{{ "inequality" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Inequality</a></li>
-          <li><a href='{{ "peace" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Peace</a></li>
-          <li><a href='{{ "aid" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Aid</a></li>
+          <li>
+            <a href='{{ "education" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Education</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "education").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "human-rights" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Human Rights</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "human-rights").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "inequality" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Inequality</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "inequality").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "peace" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Peace</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "peace").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "aid" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Aid</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "aid").Pages }}
+            </span>
+          </li>
         </ul>
       </div>
 
@@ -79,11 +262,41 @@
       <div>
         <h3 class="text-lg font-semibold mb-4">Demographics</h3>
         <ul class="space-y-2">
-          <li><a href='{{ "population" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Population</a></li>
-          <li><a href='{{ "migration" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Migration</a></li>
-          <li><a href='{{ "languages" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Languages</a></li>
-          <li><a href='{{ "ethnicity" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Ethnicity</a></li>
-          <li><a href='{{ "religion" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Religion</a></li>
+          <li>
+            <a href='{{ "population" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Population</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "population").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "migration" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Migration</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "migration").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "languages" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Languages</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "languages").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "ethnicity" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Ethnicity</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "ethnicity").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "religion" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Religion</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "religion").Pages }}
+            </span>
+          </li>
         </ul>
       </div>
 
@@ -91,11 +304,42 @@
       <div>
         <h3 class="text-lg font-semibold mb-4">Environment</h3>
         <ul class="space-y-2">
-          <li><a href='{{ "climate" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Climate</a></li>
-          <li><a href='{{ "pollution" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Pollution</a></li>
-          <li><a href='{{ "natural-resources" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Natural Resources</a></li>
-          <li><a href='{{ "land-use" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Land Use</a></li>
-          <li><a href='{{ "biodiversity" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Biodiversity</a></li>
+          <li>
+            <a href='{{ "climate" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Climate</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "climate").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "pollution" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Pollution</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "pollution").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "natural-resources" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Natural
+              Resources</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "natural-resources").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "land-use" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Land Use</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "land-use").Pages }}
+            </span>
+          </li>
+          <li>
+            <a href='{{ "biodiversity" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Biodiversity</a>
+            <span
+              class="ml-2 inline-flex items-center justify-center rounded-full bg-gray-300 text-xs text-gray-800 w-5 h-5">
+              {{ len (site.GetPage "section" "biodiversity").Pages }}
+            </span>
+          </li>
         </ul>
       </div>
     </div>
@@ -116,10 +360,18 @@
       <div>
         <h4 class="text-lg font-semibold mb-4">PLATFORM</h4>
         <ul class="space-y-2">
-          <li><a href='{{ "articles" | relLangURL }}' class="text-gray-300 hover:text-white">Articles</a></li>
-          <li><a href='{{ "data" | relLangURL }}' class="text-gray-300 hover:text-white">Data</a></li>
-          <li><a href='{{ "developers" | relLangURL }}' class="text-gray-300 hover:text-white">Developers</a></li>
-          <li><a href='{{ "faqs" | relLangURL }}' class="text-gray-300 hover:text-white">FAQs</a></li>
+          <li>
+            <a href='{{ "articles" | relLangURL }}' class="text-gray-300 hover:text-white">Articles</a>
+          </li>
+          <li>
+            <a href='{{ "data" | relLangURL }}' class="text-gray-300 hover:text-white">Data</a>
+          </li>
+          <li>
+            <a href='{{ "developers" | relLangURL }}' class="text-gray-300 hover:text-white">Developers</a>
+          </li>
+          <li>
+            <a href='{{ "faqs" | relLangURL }}' class="text-gray-300 hover:text-white">FAQs</a>
+          </li>
         </ul>
       </div>
 
@@ -127,10 +379,18 @@
       <div>
         <h4 class="text-lg font-semibold mb-4">ABOUT</h4>
         <ul class="space-y-2">
-          <li><a href='{{ "about" | relLangURL }}' class="text-gray-300 hover:text-white">About Us</a></li>
-          <li><a href='{{ "contact" | relLangURL }}' class="text-gray-300 hover:text-white">Contact</a></li>
-          <li><a href='{{ "contributing" | relLangURL }}' class="text-gray-300 hover:text-white">Contributing</a></li>
-          <li><a href='{{ "legal" | relLangURL }}' class="text-gray-300 hover:text-white">Legal</a></li>
+          <li>
+            <a href='{{ "about" | relLangURL }}' class="text-gray-300 hover:text-white">About Us</a>
+          </li>
+          <li>
+            <a href='{{ "contact" | relLangURL }}' class="text-gray-300 hover:text-white">Contact</a>
+          </li>
+          <li>
+            <a href='{{ "contributing" | relLangURL }}' class="text-gray-300 hover:text-white">Contributing</a>
+          </li>
+          <li>
+            <a href='{{ "legal" | relLangURL }}' class="text-gray-300 hover:text-white">Legal</a>
+          </li>
         </ul>
       </div>
 
@@ -146,7 +406,8 @@
 
     <!-- Copyright -->
     <div class="mt-8 pt-8 border-t border-gray-700 text-center text-gray-300">
-      <p>&copy; {{ now.Year }} {{ .Site.Title }} | <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a></p>
+      <p>&copy; {{ now.Year }} {{ .Site.Title }} | <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
+      </p>
     </div>
   </div>
 </div>

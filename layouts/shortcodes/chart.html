@@ -2,29 +2,13 @@
 
 {{ $title := .Get "title" }}
 {{ $description := .Get "description" }}
-{{ $note := .Get "note" }}
 
-{{ $xIndicator := .Get "x-indicator" }}
-{{ $xLabel := .Get "x-label" }}
-{{ $xScale := .Get "x-scale" | default "linear" }}
-
-{{ $yIndicator := .Get "y-indicator" }}
-{{ $yLabel := .Get "y-label" }}
-{{ $yScale := .Get "y-scale" | default "linear" }}
-
-{{ $sizeIndicator := .Get "size-indicator" }}
-{{ $sizeScale := .Get "size-scale" | default "sqrt" }}
-{{ $sizeRange := .Get "size-range" | default "[4,40]" }}
-
-{{ $colorBy := .Get "color-by" }}
-{{ $colorScheme := .Get "color-scheme" | default "some-scheme" }}
+{{ $indicator := .Get "indicator" }}
 
 {{ $timeStart := .Get "time-start" }}
 {{ $timeEnd := .Get "time-end" }}
-{{ $timeInterval := .Get "time-interval" | default "year" }}
 
 {{ $locations := .Get "locations" }}
-{{ $regions := .Get "regions" }}
 
 <div class="max-w-full mx-auto border border-gray-100">
     <div class="chart-container-wrapper flex flex-col md:flex-row">
@@ -43,13 +27,8 @@
 
             <!-- Chart -->
             <div class="chart w-full h-[30rem]" data-type="{{ $type }}" data-title="{{ $title }}"
-                data-description="{{ $description }}" data-note="{{ $note }}" data-x-indicator="{{ $xIndicator }}"
-                data-x-label="{{ $xLabel }}" data-x-scale="{{ $xScale }}" data-y-indicator="{{ $yIndicator }}"
-                data-y-label="{{ $yLabel }}" data-y-scale="{{ $yScale }}" data-size-indicator="{{ $sizeIndicator }}"
-                data-size-scale="{{ $sizeScale }}" data-size-range="{{ $sizeRange }}" data-color-by="{{ $colorBy }}"
-                data-color-scheme="{{ $colorScheme }}" data-time-start="{{ $timeStart }}" data-time-end="{{ $timeEnd }}"
-                data-time-interval="{{ $timeInterval }}" data-locations="{{ $locations }}"
-                data-regions="{{ $regions }}">
+                data-description="{{ $description }}" data-indicator="{{ $indicator }}"
+                data-time-start="{{ $timeStart }}" data-time-end="{{ $timeEnd }}" data-locations="{{ $locations }}">
             </div>
 
             <!-- Data source section -->
@@ -66,7 +45,8 @@
             <h2 class="text-xs text-gray-600 font-semibold py-2">VISUALIZATION</h2>
             <!-- Tab navigation -->
             <div class="flex w-full">
-                <button class="flex-1 px-4 py-2 text-xs border border-gray-300 rounded-l-md hover:bg-gray-100 cursor-pointer">
+                <button
+                    class="flex-1 px-4 py-2 text-xs border border-gray-300 rounded-l-md hover:bg-gray-100 cursor-pointer">
                     <i class="fa-solid fa-earth-africa"></i>&nbsp;
                     MAP
                 </button>
@@ -83,21 +63,8 @@
             </div>
 
             <!-- Country selection panel -->
-            <div class="selection-panel hidden md:block mt-2">
+            <div class="selection-panel mt-2">
                 <h2 class="text-xs text-gray-600 font-semibold py-2">SELECT COUNTRIES AND REGIONS</h2>
-
-                <!-- Search input -->
-                <div class="mb-2">
-                    <div class="relative">
-                        <input type="text" placeholder="Search"
-                            class="w-full border border-gray-300 rounded-md py-2 px-4 pl-10">
-                        <svg class="absolute left-3 top-3 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </div>
-                </div>
 
                 <!-- Selected locations section -->
                 <div class="selected-locations h-[27rem] overflow-y-auto divide-y divide-gray-200">
