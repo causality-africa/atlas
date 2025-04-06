@@ -1,5 +1,3 @@
 ---
 title: "Home"
 ---
-
-Home page.
