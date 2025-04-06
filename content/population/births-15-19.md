@@ -8,8 +8,9 @@ type: chart
 {{< chart
     type="line"
     title="Births by Women Aged 15-19"
-    description="Annual births to women aged 15 to 19."
+    description="Annual births to women aged 15 to 19"
     indicator="births-15-19"
+    unit="persons"
     time-start="1950"
     time-end="2031"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"

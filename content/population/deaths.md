@@ -8,8 +8,9 @@ type: chart
 {{< chart
     type="line"
     title="Total Deaths"
-    description="Total annual deaths."
+    description="Total annual deaths"
     indicator="deaths"
+    unit="persons"
     time-start="1950"
     time-end="2031"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"

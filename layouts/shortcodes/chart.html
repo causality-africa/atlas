@@ -4,11 +4,13 @@
 {{ $description := .Get "description" }}
 
 {{ $indicator := .Get "indicator" }}
+{{ $unit := .Get "unit" }}
 
 {{ $timeStart := .Get "time-start" }}
 {{ $timeEnd := .Get "time-end" }}
 
 {{ $locations := .Get "locations" }}
+{{ $regions := .Get "regions" | default "AF" }}
 
 <div class="max-w-full mx-auto border border-gray-100">
     <div class="chart-container-wrapper flex flex-col md:flex-row">
@@ -17,7 +19,10 @@
             <div class="flex flex-row">
                 <div class="flex-grow">
                     <h1 class="text-2xl font-bold font-serif text-gray-800">{{ $title }}</h1>
-                    <p class="text-sm text-gray-600 my-2">{{ $description }}</p>
+                    <p class="text-sm text-gray-600 my-2">
+                        {{ $description }}
+                        <span class="text-xs">({{ $unit }})</span>
+                    </p>
                 </div>
 
                 <div class="flex-shrink-0">
@@ -28,7 +33,8 @@
             <!-- Chart -->
             <div class="chart w-full h-[30rem]" data-type="{{ $type }}" data-title="{{ $title }}"
                 data-description="{{ $description }}" data-indicator="{{ $indicator }}"
-                data-time-start="{{ $timeStart }}" data-time-end="{{ $timeEnd }}" data-locations="{{ $locations }}">
+                data-time-start="{{ $timeStart }}" data-time-end="{{ $timeEnd }}" data-locations="{{ $locations }}"
+                data-regions="{{ $regions }}">
             </div>
 
             <!-- Data source section -->

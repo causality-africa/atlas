@@ -8,8 +8,9 @@ type: chart
 {{< chart
     type="line"
     title="Infant Deaths"
-    description="Annual deaths of infants under age 1."
+    description="Annual deaths of infants under age 1"
     indicator="infant-deaths"
+    unit="persons"
     time-start="1950"
     time-end="2031"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"

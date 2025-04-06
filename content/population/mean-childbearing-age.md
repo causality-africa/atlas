@@ -8,8 +8,9 @@ type: chart
 {{< chart
     type="line"
     title="Mean Age at Childbearing"
-    description="Average age of mothers at birth of their children."
+    description="Average age of mothers at birth of their children"
     indicator="mean-childbearing-age"
+    unit="years"
     time-start="1950"
     time-end="2031"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"

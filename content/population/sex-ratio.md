@@ -8,8 +8,9 @@ type: chart
 {{< chart
     type="line"
     title="Population Sex Ratio"
-    description="Population sex ratio as of 1st July."
+    description="Population sex ratio as of 1st July"
     indicator="sex-ratio"
+    unit="males per 100 females"
     time-start="1950"
     time-end="2031"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"

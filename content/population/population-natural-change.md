@@ -8,8 +8,9 @@ type: chart
 {{< chart
     type="line"
     title="Population Natural Change"
-    description="Births minus Deaths."
+    description="Births minus Deaths"
     indicator="population-natural-change"
+    unit="persons"
     time-start="1950"
     time-end="2031"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"

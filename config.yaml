@@ -38,7 +38,9 @@ languages:
       description: "Africa's story, told through data ❤️"
     weight: 4
 
-taxonomies: {}
+taxonomies:
+  topic: "topics"
+  author: "authors"
 
 menus:
   main:

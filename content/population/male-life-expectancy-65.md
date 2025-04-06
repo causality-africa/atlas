@@ -8,8 +8,9 @@ type: chart
 {{< chart
     type="line"
     title="Male Life Expectancy at Age 65"
-    description="Average number of additional years a 65-year-old male is expected to live."
+    description="Average number of additional years a 65-year-old male is expected to live"
     indicator="male-life-expectancy-65"
+    unit="years"
     time-start="1950"
     time-end="2031"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"

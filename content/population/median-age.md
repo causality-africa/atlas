@@ -8,8 +8,9 @@ type: chart
 {{< chart
     type="line"
     title="Median Age"
-    description="Median age as of 1st July."
+    description="Median age as of 1st July"
     indicator="median-age"
+    unit="years"
     time-start="1950"
     time-end="2031"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"

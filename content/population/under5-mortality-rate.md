@@ -8,8 +8,9 @@ type: chart
 {{< chart
     type="line"
     title="Mortality Before Age 5"
-    description="Deaths of children under age 5 per 1000 live births."
+    description="Deaths of children under age 5 per 1000 live births"
     indicator="under5-mortality-rate"
+    unit=""
     time-start="1950"
     time-end="2031"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"
