@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
 
 jobs:
   deploy:
@@ -33,6 +32,9 @@ jobs:
 
           hugo --minify
           # pnpm pagefind --site "public"
+
+      - name: Copy CNAME into ./public
+        run: cp CNAME ./public
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
