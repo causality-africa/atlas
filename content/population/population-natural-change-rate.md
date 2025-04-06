@@ -8,8 +8,9 @@ type: chart
 {{< chart
     type="line"
     title="Rate of Population Natural Change"
-    description="Rate of natural population change."
+    description="Rate of natural population change"
     indicator="population-natural-change-rate"
+    unit="per 1000 population"
     time-start="1950"
     time-end="2031"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"

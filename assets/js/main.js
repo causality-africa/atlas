@@ -32,8 +32,7 @@ class ChartFactory {
             case "line":
                 return new LineChartVisualizer(wrapperEl, chartEl);
             default:
-                console.warn(`Unknown chart type: ${type}`);
-                return new LineChartVisualizer(wrapperEl, chartEl);
+                throw new Error(`Unsupported chart type: ${type}`);
         }
     }
 }
@@ -45,51 +44,69 @@ class BaseChartVisualizer {
         this.chartEl = chartEl;
         this.dataset = [];
         this.sources = [];
+        this.locations = {};
+        this.regions = {};
+
+        this.urlParams = new URLSearchParams(window.location.search);
+        this.locationCodes = [];
+        this.regionCodes = [];
     }
 
     async initialize() {
-        await this.fetchData();
-        this.setupUI();
-        this.render();
+        this.applyURLParams();
+        this.locationCodes = this.chartEl.dataset.locations.split(",");
+        this.regionCodes = this.chartEl.dataset.regions.split(",");
+
+        await this.prefetchData();
+        await this.setupUI();
+        await this.render();
     }
 
-    async fetchData() {
-        throw new Error("fetchData method must be implemented by subclass");
+    applyURLParams() {
+        throw new Error("applyURLParams method must be implemented by subclass");
     }
 
-    setupUI() {
-        this.setupLocationSelectors();
-        this.setupSourceInfo();
+    updateURLParams() {
+        throw new Error("updateURLParams method must be implemented by subclass");
+    }
+
+    async prefetchData() {
+        throw new Error("prefetchData method must be implemented by subclass");
+    }
+
+    async setupUI() {
+        await this.setupLocationSelectors();
         this.setupExportButton();
     }
 
-    setupLocationSelectors() {
+    async setupLocationSelectors() {
         const selectedLocationsEl = this.wrapperEl.querySelector(".selected-locations");
-        if (!selectedLocationsEl) return;
+        selectedLocationsEl.innerHTML = "";
 
-        selectedLocationsEl.innerHTML = '';
-
-        this.dataset.forEach(data => {
+        await Promise.all(this.regions["AF"].locations.map(async (location) => {
             const container = document.createElement("div");
             container.className = "flex items-center p-3";
 
+            const locations = await DataService.fetchLocations([location.location_code]);
+            const locationName = locations[location.location_code].name;
+
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
-            checkbox.id = data.location;
-            checkbox.checked = true;
+            checkbox.id = location.location_code;
+            checkbox.checked = this.locationCodes.includes(location.location_code);
             checkbox.className = "mr-3 h-4 w-4";
-            checkbox.addEventListener("change", () => this.updateVisualization());
+            checkbox.addEventListener("change", async () => await this.updateVisualization());
 
             const label = document.createElement("label");
-            label.htmlFor = data.location;
+            label.htmlFor = location.location_code;
             label.className = "text-sm text-gray-600";
-            label.textContent = data.location;
+            label.textContent = locationName;
 
             container.appendChild(checkbox);
             container.appendChild(label);
 
             selectedLocationsEl.appendChild(container);
-        });
+        }));
     }
 
     setupSourceInfo() {
@@ -122,50 +139,76 @@ class BaseChartVisualizer {
 
     getSelectedLocations() {
         const selectedLocationsEl = this.wrapperEl.querySelector(".selected-locations");
-        if (!selectedLocationsEl) return this.dataset.map(d => d.location);
 
-        return Array.from(selectedLocationsEl.querySelectorAll("input:checked"))
-            .map(input => input.id);
+        const selected = Array.from(selectedLocationsEl.querySelectorAll("input:checked")).map(input => input.id);
+        if (selected.length == 0) {
+            return this.locationCodes;
+        }
+        return selected;
     }
 
-    render() {
+    async render() {
         throw new Error("render method must be implemented by subclass");
     }
 
-    updateVisualization() {
+    async updateVisualization() {
         throw new Error("updateVisualization method must be implemented by subclass");
     }
 }
 
-// Line chart implementation
+// Line chart
 class LineChartVisualizer extends BaseChartVisualizer {
     constructor(wrapperEl, chartEl) {
         super(wrapperEl, chartEl);
         this.chart = null;
+
+        this.indicator = this.chartEl.dataset.indicator;
+        this.timeStart = new Date(this.chartEl.dataset.timeStart);
+        this.timeEnd = new Date(this.chartEl.dataset.timeEnd);
     }
 
-    async fetchData() {
-        const locationCodes = this.chartEl.dataset.locations.split(",");
-        const timeStart = new Date(this.chartEl.dataset.timeStart);
-        const timeEnd = new Date(this.chartEl.dataset.timeEnd);
-        const indicator = this.chartEl.dataset.indicator;
+    applyURLParams() {
+        const timeStart = this.urlParams.get("start");
+        if (timeStart) {
+            this.chartEl.dataset.timeStart = timeStart;
+        }
 
-        const result = await DataService.fetchDataPoints(
-            indicator, timeStart, timeEnd, locationCodes
-        );
+        const timeEnd = this.urlParams.get("end");
+        if (timeEnd) {
+            this.chartEl.dataset.timeEnd = timeEnd;
+        }
 
-        this.dataset = result.dataset;
-        this.sources = result.sources;
+        const locations = this.urlParams.get("locations");
+        if (locations) {
+            this.chartEl.dataset.locations = locations.split("~").join(",");
+        }
+
+        const regions = this.urlParams.get("regions");
+        if (regions) {
+            this.chartEl.dataset.regions = regions.split("~").join(",");
+        }
+
+        console.log(this.chartEl.dataset);
     }
 
-    render() {
+    updateURLParams() {
+        this.urlParams.set("start", this.timeStart.getFullYear());
+        this.urlParams.set("end", this.timeEnd.getFullYear());
+        this.urlParams.set("locations", this.locationCodes.join("~"))
+        this.urlParams.set("regions", this.regionCodes.join("~"))
+
+        history.pushState(null, null, "?"+this.urlParams.toString());
+    }
+
+    async prefetchData() {
+        this.regions = await DataService.fetchRegions(this.regionCodes);
+    }
+
+    async render() {
         this.chart = echarts.init(this.chartEl, null, { renderer: "svg" });
 
-        const timeStart = new Date(this.chartEl.dataset.timeStart);
-        const timeEnd = new Date(this.chartEl.dataset.timeEnd);
-
         const option = {
-            series: this.generateSeries(),
+            series: await this.generateSeries(),
             grid: {
                 top: 10,
                 bottom: 0,
@@ -175,8 +218,8 @@ class LineChartVisualizer extends BaseChartVisualizer {
             },
             xAxis: {
                 data: Array.from(
-                    { length: timeEnd.getFullYear() - timeStart.getFullYear() + 1 },
-                    (_, i) => timeStart.getFullYear() + i,
+                    { length: this.timeEnd.getFullYear() - this.timeStart.getFullYear() + 1 },
+                    (_, i) => this.timeStart.getFullYear() + i,
                 ),
             },
             yAxis: {
@@ -208,21 +251,29 @@ class LineChartVisualizer extends BaseChartVisualizer {
         window.addEventListener("resize", () => {
             this.chart.resize();
         });
+
+        this.setupSourceInfo();
     }
 
-    generateSeries() {
-        const selectedLocations = this.getSelectedLocations();
+    async generateSeries() {
+        this.locationCodes = this.getSelectedLocations();
+        const result = await DataService.fetchDataPoints(
+            this.indicator,
+            this.timeStart,
+            this.timeEnd,
+            this.locationCodes,
+        );
+
+        this.dataset = result.dataset;
+        this.sources = result.sources;
+        this.locations = result.locations;
 
         return this.dataset
-            .filter(data => selectedLocations.includes(data.location))
             .map(data => ({
-                name: data.location,
+                name: data.name,
                 type: "line",
                 data: data.data,
                 showSymbol: false,
-                itemStyle: {
-                    color: data.color
-                },
                 endLabel: {
                     show: true,
                     formatter: "{a}",
@@ -241,9 +292,11 @@ class LineChartVisualizer extends BaseChartVisualizer {
             }));
     }
 
-    updateVisualization() {
-        const series = this.generateSeries();
+    async updateVisualization() {
+        const series = await this.generateSeries();
         this.chart.setOption({ series }, { replaceMerge: ["series"] });
+
+        this.updateURLParams();
     }
 }
 
@@ -256,62 +309,95 @@ class DataService {
         const queryStr = `/query?indicator=${indicator}&start=${startStr}&end=${endStr}&locations=${locationsStr}`;
 
         try {
-            const locationNames = await this.fetchLocationNames(locationCodes);
+            const locations = await this.fetchLocations(locationCodes);
 
-            const dataResponse = await fetch(API_URL + queryStr);
-            if (!dataResponse.ok) {
-                throw new Error(`API request failed with status ${dataResponse.status}`);
+            const response = await fetch(API_URL + queryStr);
+            if (!response.ok) {
+                throw new Error(`API request failed with status ${response.status}`);
             }
 
-            const rawData = await dataResponse.json();
+            const rawData = await response.json();
             const sources = await this.fetchSourceInfo(rawData);
 
             let i = 0;
             const dataset = [];
             for (const locationCode in rawData) {
                 dataset.push({
-                    location: locationNames[locationCode] || locationCode,
+                    code: locationCode,
+                    name: locations[locationCode].name,
                     data: rawData[locationCode].map(point => point.numeric_value),
-                    color: COLOR_PALETTE.line[i % COLOR_PALETTE.line.length],
                 });
                 i++;
             }
 
-            dataset.sort((a, b) => a.location.localeCompare(b.location));
-            return { dataset, sources };
+            dataset.sort((a, b) => a.name.localeCompare(b.name));
+            return { dataset, sources, locations };
         } catch (error) {
             console.error("Error fetching data:", error);
             throw error;
         }
     }
 
-    static async fetchLocationNames(locationCodes) {
-        const locationNames = {};
+    static async fetchLocations(locationCodes) {
+        const locations = {};
         await Promise.all(locationCodes.map(async (code) => {
             const path = "/locations/" + code;
-            const locData = CacheService.getFromCache(path);
+            const data = CacheService.getFromCache(path);
 
-            if (locData) {
-                locationNames[code] = locData.name;
+            if (data) {
+                locations[code] = data;
                 return;
             }
 
             try {
-                const locResponse = await fetch(API_URL + path);
-                if (locResponse.ok) {
-                    const locData = await locResponse.json();
-                    locationNames[code] = locData.name;
-                    CacheService.saveToCache(path, locData, CACHE_DURATION.TWO_WEEKS);
+                const response = await fetch(API_URL + path);
+                if (response.ok) {
+                    const data = await response.json();
+                    locations[code] = data;
+                    CacheService.saveToCache(path, data, CACHE_DURATION.TWO_WEEKS);
                 } else {
-                    locationNames[code] = code;
+                    throw new Error(`API request failed with status ${response.status}`);
                 }
             } catch (error) {
-                locationNames[code] = code;
-                console.error(`Failed to fetch location name for ${code}:`, error);
+                console.error(`Failed to fetch location with ${code}:`, error);
+                throw error;
             }
         }));
 
-        return locationNames;
+        return locations;
+    }
+
+    static async fetchRegions(regionCodes) {
+        if (!regionCodes.includes("AF")) {
+            regionCodes.push("AF");
+        }
+
+        const regions = {};
+        await Promise.all(regionCodes.map(async (code) => {
+            const path = "/regions/" + code;
+            const data = CacheService.getFromCache(path);
+
+            if (data) {
+                regions[code] = data;
+                return;
+            }
+
+            try {
+                const response = await fetch(API_URL + path);
+                if (response.ok) {
+                    const data = await response.json();
+                    regions[code] = data;
+                    CacheService.saveToCache(path, data, CACHE_DURATION.TWO_WEEKS);
+                } else {
+                    throw new Error(`API request failed with status ${response.status}`);
+                }
+            } catch (error) {
+                console.error(`Failed to fetch region with ${code}:`, error);
+                throw error;
+            }
+        }));
+
+        return regions;
     }
 
     static async fetchSourceInfo(rawData) {

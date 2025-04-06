@@ -4,6 +4,8 @@ subtitle: ""
 summary: ""
 date: {{ .Date }}
 type: article
+topics:
+    - "Sustainable Development Goals"
 authors:
     - Jane Doe
 ---

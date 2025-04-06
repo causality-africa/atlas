@@ -8,8 +8,9 @@ type: chart
 {{< chart
     type="line"
     title="Male Mortality Between Age 15 and 50"
-    description="Probability of male dying between ages 15 and 50 per 1000 males alive at age 15."
+    description="Probability of male dying between ages 15 and 50 per 1000 males alive at age 15"
     indicator="male-mortality-15-50"
+    unit="deaths per 1000 alive at age 15"
     time-start="1950"
     time-end="2031"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"

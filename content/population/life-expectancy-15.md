@@ -8,8 +8,9 @@ type: chart
 {{< chart
     type="line"
     title="Life Expectancy at Age 15"
-    description="Average number of additional years a 15-year-old is expected to live."
+    description="Average number of additional years a 15-year-old is expected to live"
     indicator="life-expectancy-15"
+    unit="years"
     time-start="1950"
     time-end="2031"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"

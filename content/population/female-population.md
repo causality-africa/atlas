@@ -8,8 +8,9 @@ type: chart
 {{< chart
     type="line"
     title="Female Population"
-    description="Female population as of 1st July."
+    description="Female population as of 1st July"
     indicator="female-population"
+    unit="persons"
     time-start="1950"
     time-end="2031"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"

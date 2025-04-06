@@ -1,5 +1,6 @@
 .hugo_build.lock
 public/
 resources/_gen/
+hugo_stats.json
 
 node_modules/

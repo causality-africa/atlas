@@ -8,8 +8,9 @@ type: chart
 {{< chart
     type="line"
     title="Male Mortality Before Age 40"
-    description="Probability of male dying before age 40 per 1000 male live births."
+    description="Probability of male dying before age 40 per 1000 male live births"
     indicator="male-mortality-before-40"
+    unit="deaths per 1000 live births"
     time-start="1950"
     time-end="2031"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"
