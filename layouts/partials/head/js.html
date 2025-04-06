@@ -18,5 +18,6 @@
     {{- with . | js.Build $opts | fingerprint }}
       <script src="{{ .RelPermalink }}" integrity="{{- .Data.Integrity }}" crossorigin="anonymous"></script>
     {{- end }}
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="5cc3d527-225b-4d92-b922-5af5e5af0bb0"></script>
   {{- end }}
 {{- end }}
