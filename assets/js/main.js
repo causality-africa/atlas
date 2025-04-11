@@ -1,4 +1,3 @@
-// Core configuration
 const API_URL = "https://api.causality.africa/v1";
 
 const COLOR_PALETTE = {
@@ -9,23 +8,45 @@ const COLOR_PALETTE = {
 };
 
 const CACHE_DURATION = { // In hours
+    ONE_DAY: 24,
     ONE_WEEK: 24 * 7,
     TWO_WEEKS: 24 * 14,
 };
 
-// Main entry point
+const URLParams = {
+    get() {
+        return new URLSearchParams(window.location.search);
+    },
+
+    update(updates) {
+        const params = this.get();
+        for (const [key, value] of Object.entries(updates)) {
+            params.set(key, value);
+        }
+        history.pushState(null, null, "?" + params.toString());
+
+        document.dispatchEvent(new CustomEvent("urlParamsChanged"));
+    }
+};
+
+
 document.addEventListener("DOMContentLoaded", async () => {
-    const chartWrapperEls = document.getElementsByClassName("chart-container-wrapper");
+    const chartWrapperEls = document.querySelectorAll(".chart-container-wrapper");
     for (const wrapperEl of chartWrapperEls) {
         const chartEl = wrapperEl.querySelector(".chart-container .chart");
         const chartType = chartEl.dataset.chartType || "line";
 
         const visualizer = ChartFactory.create(chartType, wrapperEl, chartEl);
-        visualizer.initialize();
+        await visualizer.initialize();
+    }
+
+    const tableEls = document.querySelectorAll(".data-table");
+    for (const tableEl of tableEls) {
+        const tableVisualizer = new TableVisualizer(tableEl);
+        await tableVisualizer.initialize();
     }
 });
 
-// Factory for creating appropriate visualizer
 class ChartFactory {
     static create(type, wrapperEl, chartEl) {
         switch (type.toLowerCase()) {
@@ -37,41 +58,77 @@ class ChartFactory {
     }
 }
 
-// Base visualizer
 class BaseChartVisualizer {
     constructor(wrapperEl, chartEl) {
         this.wrapperEl = wrapperEl;
         this.chartEl = chartEl;
+
         this.dataset = [];
         this.sources = [];
-        this.locations = {};
-        this.regions = {};
 
-        this.urlParams = new URLSearchParams(window.location.search);
-        this.locationCodes = [];
-        this.regionCodes = [];
+        this.timeStart = new Date(this.chartEl.dataset.timeStart);
+        this.timeEnd = new Date(this.chartEl.dataset.timeEnd);
+
+        this.region = null;
+        this.regionCode = this.chartEl.dataset.region;
+
+        this.locations = {};
+        this.locationCodes = this.chartEl.dataset.locations.split(",");
+
+        document.addEventListener("urlParamsChanged", () => this.syncFromURL());
     }
 
     async initialize() {
-        this.applyURLParams();
-        this.locationCodes = this.chartEl.dataset.locations.split(",");
-        this.regionCodes = this.chartEl.dataset.regions.split(",");
+        this.syncFromURL();
 
-        await this.prefetchData();
+        await this.fetchData();
         await this.setupUI();
         await this.render();
     }
 
-    applyURLParams() {
-        throw new Error("applyURLParams method must be implemented by subclass");
+    syncFromURL() {
+        const params = URLParams.get();
+        let needsUpdate = false;
+
+        if (params.has("start")) {
+            this.chartEl.dataset.timeStart = params.get("start");
+            this.timeStart = new Date(this.chartEl.dataset.timeStart);
+            needsUpdate = true;
+        }
+
+        if (params.has("end")) {
+            this.chartEl.dataset.timeEnd = params.get("end");
+            this.timeEnd = new Date(this.chartEl.dataset.timeEnd);
+            needsUpdate = true;
+        }
+
+        if (params.has("region")) {
+            this.regionCode = this.chartEl.dataset.region = params.get("region");
+            needsUpdate = true;
+        }
+
+        if (params.has("locations")) {
+            this.chartEl.dataset.locations = params.get("locations").split(".").join(",");
+            this.locationCodes = this.chartEl.dataset.locations.split(",")
+            needsUpdate = true;
+        }
+
+        if (needsUpdate && this.chart) {
+            this.fetchData().then(() => this.render());
+        }
     }
 
     updateURLParams() {
-        throw new Error("updateURLParams method must be implemented by subclass");
+        URLParams.update({
+            start: this.timeStart.getFullYear(),
+            end: this.timeEnd.getFullYear(),
+            locations: this.locationCodes.join("."),
+            region: this.regionCode
+        });
     }
 
-    async prefetchData() {
-        throw new Error("prefetchData method must be implemented by subclass");
+    async fetchData() {
+        throw new Error("fetchData method must be implemented by subclass");
     }
 
     async setupUI() {
@@ -83,7 +140,7 @@ class BaseChartVisualizer {
         const selectedLocationsEl = this.wrapperEl.querySelector(".selected-locations");
         selectedLocationsEl.innerHTML = "";
 
-        await Promise.all(this.regions["AF"].locations.map(async (location) => {
+        await Promise.all(this.region.locations.map(async (location) => {
             const container = document.createElement("div");
             container.className = "flex items-center p-3";
 
@@ -156,52 +213,26 @@ class BaseChartVisualizer {
     }
 }
 
-// Line chart
 class LineChartVisualizer extends BaseChartVisualizer {
     constructor(wrapperEl, chartEl) {
         super(wrapperEl, chartEl);
         this.chart = null;
 
         this.indicator = this.chartEl.dataset.indicator;
-        this.timeStart = new Date(this.chartEl.dataset.timeStart);
-        this.timeEnd = new Date(this.chartEl.dataset.timeEnd);
     }
 
-    applyURLParams() {
-        const timeStart = this.urlParams.get("start");
-        if (timeStart) {
-            this.chartEl.dataset.timeStart = timeStart;
-        }
+    async fetchData() {
+        const result = await DataService.fetchIndicatorData(
+            this.indicator,
+            this.timeStart,
+            this.timeEnd,
+            this.regionCode,
+        );
 
-        const timeEnd = this.urlParams.get("end");
-        if (timeEnd) {
-            this.chartEl.dataset.timeEnd = timeEnd;
-        }
-
-        const locations = this.urlParams.get("locations");
-        if (locations) {
-            this.chartEl.dataset.locations = locations.split("~").join(",");
-        }
-
-        const regions = this.urlParams.get("regions");
-        if (regions) {
-            this.chartEl.dataset.regions = regions.split("~").join(",");
-        }
-
-        console.log(this.chartEl.dataset);
-    }
-
-    updateURLParams() {
-        this.urlParams.set("start", this.timeStart.getFullYear());
-        this.urlParams.set("end", this.timeEnd.getFullYear());
-        this.urlParams.set("locations", this.locationCodes.join("~"))
-        this.urlParams.set("regions", this.regionCodes.join("~"))
-
-        history.pushState(null, null, "?"+this.urlParams.toString());
-    }
-
-    async prefetchData() {
-        this.regions = await DataService.fetchRegions(this.regionCodes);
+        this.dataset = result.dataset;
+        this.sources = result.sources;
+        this.region = result.region;
+        this.locations = result.locations;
     }
 
     async render() {
@@ -257,18 +288,11 @@ class LineChartVisualizer extends BaseChartVisualizer {
 
     async generateSeries() {
         this.locationCodes = this.getSelectedLocations();
-        const result = await DataService.fetchDataPoints(
-            this.indicator,
-            this.timeStart,
-            this.timeEnd,
-            this.locationCodes,
+        const filteredDataset = this.dataset.filter(data =>
+            this.locationCodes.includes(data.code)
         );
 
-        this.dataset = result.dataset;
-        this.sources = result.sources;
-        this.locations = result.locations;
-
-        return this.dataset
+        return filteredDataset
             .map(data => ({
                 name: data.name,
                 type: "line",
@@ -300,18 +324,288 @@ class LineChartVisualizer extends BaseChartVisualizer {
     }
 }
 
-// Services for data fetching and caching
+
+class TableVisualizer {
+    constructor(tableEl) {
+        this.tableEl = tableEl;
+
+        this.sources = [];
+        this.datasetByIndicator = {};
+
+        this.indicators = this.tableEl.dataset.indicators.split(",");
+        this.units = this.tableEl.dataset.units.split(",")
+
+        this.timeStart = new Date(this.tableEl.dataset.timeStart);
+        this.timeEnd = new Date(this.tableEl.dataset.timeEnd);
+        this.currentYear = Math.min(new Date().getFullYear(), this.timeEnd.getFullYear());
+        this.yearSelect = document.getElementById("year-select");
+
+        this.locations = {};
+        this.regionCode = this.tableEl.dataset.region;
+
+        document.addEventListener("urlParamsChanged", () => this.syncFromURL());
+    }
+
+    async initialize() {
+        this.syncFromURL();
+
+        await this.setupYearSelector();
+        await this.fetchData();
+        this.renderTable();
+
+        this.yearSelect.addEventListener("change", () => {
+            this.currentYear = parseInt(this.yearSelect.value);
+            this.renderTable();
+        });
+    }
+
+    syncFromURL() {
+        const params = URLParams.get();
+        let needsUpdate = false;
+
+        if (params.has("start")) {
+            this.tableEl.dataset.timeStart = params.get("start");
+            this.timeStart = new Date(this.tableEl.dataset.timeStart);
+            needsUpdate = true;
+        }
+
+        if (params.has("end")) {
+            this.timeEnd = this.tableEl.dataset.timeEnd = params.get("end");
+            this.timeEnd = new Date(this.tableEl.dataset.timeEnd);
+            this.currentYear = this.timeEnd.getFullYear();
+            needsUpdate = true;
+        }
+
+        if (params.has("region")) {
+            this.regionCode = this.tableEl.dataset.region = params.get("region");
+            needsUpdate = true;
+        }
+
+        if (needsUpdate && this.tableEl.querySelector("tbody")) {
+            this.fetchData().then(() => this.renderTable());
+        }
+    }
+
+    async setupYearSelector() {
+        this.yearSelect.innerHTML = "";
+
+        const startYear = this.timeStart.getFullYear();
+        const endYear = this.timeEnd.getFullYear();
+
+        for (let year = endYear; year >= startYear; year--) {
+            const option = document.createElement("option");
+            option.value = year;
+            option.textContent = year;
+            this.yearSelect.appendChild(option);
+        }
+
+        this.yearSelect.value = this.currentYear;
+    }
+
+    async fetchData() {
+        try {
+            const result = await DataService.fetchMultiIndicatorData(
+                this.indicators,
+                this.timeStart,
+                this.timeEnd,
+                this.regionCode,
+            );
+
+            this.datasetByIndicator = result.datasetByIndicator;
+            this.sources = result.sources;
+            this.locations = result.locations;
+        } catch (error) {
+            console.error("Error fetching data for table:", error);
+            this.renderErrorState();
+        }
+    }
+
+    renderTable() {
+        const headerRow = this.tableEl.querySelector("thead tr");
+        headerRow.innerHTML = "";
+
+        const counterHeader = document.createElement("th");
+        counterHeader.textContent = "#";
+        counterHeader.className = "px-3 py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider";
+        headerRow.appendChild(counterHeader);
+
+        const countryHeader = document.createElement("th");
+        countryHeader.textContent = "Country";
+        countryHeader.className = "px-6 py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider";
+        headerRow.appendChild(countryHeader);
+
+        this.indicators.forEach((column, index) => {
+            const th = document.createElement("th");
+            th.textContent = `${this.formatColumnName(column)} (${this.units[index]})`;
+            th.className = "px-6 py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider";
+            headerRow.appendChild(th);
+        });
+
+        const tbody = this.tableEl.querySelector("tbody");
+        tbody.innerHTML = "";
+
+        const yearIndex = this.currentYear - this.timeStart.getFullYear();
+
+        const baseDataset = this.datasetByIndicator[this.indicators[0]] || [];
+
+        const dataByLocationAndIndicator = {};
+
+        this.indicators.forEach(column => {
+            dataByLocationAndIndicator[column] = {};
+            (this.datasetByIndicator[column] || []).forEach(item => {
+                dataByLocationAndIndicator[column][item.code] = item.data;
+            });
+        });
+
+        baseDataset.forEach((country, index) => {
+            const tr = document.createElement("tr");
+            tr.className = index % 2 === 0 ? "bg-white" : "bg-gray-50";
+            tr.classList.add("hover:bg-gray-100");
+
+            const counterCell = document.createElement("td");
+            counterCell.textContent = index + 1;
+            counterCell.className = "px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900";
+            tr.appendChild(counterCell);
+
+            const countryCell = document.createElement("td");
+            countryCell.textContent = country.name;
+            countryCell.className = "px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900";
+            tr.appendChild(countryCell);
+
+            this.indicators.forEach(column => {
+                const td = document.createElement("td");
+                td.className = "px-6 py-4 whitespace-nowrap text-sm text-gray-900";
+
+                const dataForIndicator = dataByLocationAndIndicator[column][country.code];
+                const value = dataForIndicator ? dataForIndicator[yearIndex] : null;
+
+                td.textContent = this.formatValue(value);
+                tr.appendChild(td);
+            });
+
+            tbody.appendChild(tr);
+        });
+
+        const sourcesEl = document.querySelector(".table-sources");
+        if (sourcesEl) {
+            sourcesEl.textContent = Utils.formatSourceList(this.sources);
+        }
+    }
+
+    renderErrorState() {
+        const tbody = this.tableEl.querySelector("tbody");
+        tbody.innerHTML = "";
+
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = this.indicators.length + 1;
+        td.className = "px-6 py-4 text-center text-sm text-red-500";
+        td.textContent = "Error loading data. Please try again later.";
+
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+    }
+
+    formatColumnName(column) {
+        return column.split("-")
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(" ");
+    }
+
+    formatValue(value) {
+        if (value === undefined || value === null) {
+            return "—";
+        }
+
+        return new Intl.NumberFormat().format(value);
+    }
+}
+
 class DataService {
+    static async fetchIndicatorData(
+        indicator,
+        timeStart,
+        timeEnd,
+        regionCode,
+    ) {
+        const result = await this.fetchMultiIndicatorData(
+            [indicator],
+            timeStart,
+            timeEnd,
+            regionCode,
+        )
+        return {
+            dataset: result.datasetByIndicator[indicator],
+            sources: result.sources,
+            region: result.region,
+            locations: result.locations,
+        }
+    }
+
+    static async fetchMultiIndicatorData(
+        indicators,
+        timeStart,
+        timeEnd,
+        regionCode,
+    ) {
+        const region = await this.fetchRegion(regionCode);
+
+        const locationCodes = region.locations.map((loc) => loc.location_code);
+        const locations = await this.fetchLocations(locationCodes);
+
+        const batchSize = 50;
+        const locationBatches = [];
+        for (let i = 0; i < locationCodes.length; i += batchSize) {
+            locationBatches.push(locationCodes.slice(i, i + batchSize));
+        }
+
+        let allSources = [];
+
+        const datasetByIndicator = {};
+        for (const indicator of indicators) {
+            let datasetForIndicator = [];
+
+            for (const batch of locationBatches) {
+                const result = await this.fetchDataPoints(
+                    indicator,
+                    timeStart,
+                    timeEnd,
+                    batch
+                );
+
+                datasetForIndicator = [...datasetForIndicator, ...result.dataset];
+                allSources = [...allSources, ...result.sources];
+            }
+
+            datasetForIndicator.sort((a, b) => a.name.localeCompare(b.name));
+            datasetByIndicator[indicator] = datasetForIndicator;
+        }
+
+        const dedupedSources = this.deduplicateSources(allSources);
+
+        return {
+            datasetByIndicator,
+            sources: dedupedSources,
+            region,
+            locations,
+        };
+    }
+
     static async fetchDataPoints(indicator, start, end, locationCodes) {
         const locationsStr = locationCodes.join(",");
         const startStr = start.toISOString().split("T")[0];
         const endStr = end.toISOString().split("T")[0];
         const queryStr = `/query?indicator=${indicator}&start=${startStr}&end=${endStr}&locations=${locationsStr}`;
 
+        const data = CacheService.getFromCache(queryStr);
+        if (data) {
+            return data;
+        }
+
         try {
             const locations = await this.fetchLocations(locationCodes);
-
             const response = await fetch(API_URL + queryStr);
+
             if (!response.ok) {
                 throw new Error(`API request failed with status ${response.status}`);
             }
@@ -319,19 +613,17 @@ class DataService {
             const rawData = await response.json();
             const sources = await this.fetchSourceInfo(rawData);
 
-            let i = 0;
-            const dataset = [];
-            for (const locationCode in rawData) {
-                dataset.push({
-                    code: locationCode,
-                    name: locations[locationCode].name,
-                    data: rawData[locationCode].map(point => point.numeric_value),
-                });
-                i++;
-            }
+            const dataset = Object.entries(rawData).map(([locationCode, dataPoints]) => ({
+                code: locationCode,
+                name: locations[locationCode].name,
+                data: dataPoints.map(point => point.numeric_value),
+            }));
 
-            dataset.sort((a, b) => a.name.localeCompare(b.name));
-            return { dataset, sources, locations };
+            const result = { dataset, sources, locations };
+
+            CacheService.saveToCache(queryStr, result, CACHE_DURATION.ONE_DAY);
+
+            return result;
         } catch (error) {
             console.error("Error fetching data:", error);
             throw error;
@@ -354,6 +646,7 @@ class DataService {
                 if (response.ok) {
                     const data = await response.json();
                     locations[code] = data;
+
                     CacheService.saveToCache(path, data, CACHE_DURATION.TWO_WEEKS);
                 } else {
                     throw new Error(`API request failed with status ${response.status}`);
@@ -367,37 +660,28 @@ class DataService {
         return locations;
     }
 
-    static async fetchRegions(regionCodes) {
-        if (!regionCodes.includes("AF")) {
-            regionCodes.push("AF");
+    static async fetchRegion(code) {
+        const path = "/regions/" + code;
+        let data = CacheService.getFromCache(path);
+        if (data) {
+            return data;
         }
 
-        const regions = {};
-        await Promise.all(regionCodes.map(async (code) => {
-            const path = "/regions/" + code;
-            const data = CacheService.getFromCache(path);
+        try {
+            const response = await fetch(API_URL + path);
+            if (response.ok) {
+                data = await response.json();
 
-            if (data) {
-                regions[code] = data;
-                return;
+                CacheService.saveToCache(path, data, CACHE_DURATION.TWO_WEEKS);
+            } else {
+                throw new Error(`API request failed with status ${response.status}`);
             }
+        } catch (error) {
+            console.error(`Failed to fetch region with ${code}:`, error);
+            throw error;
+        }
 
-            try {
-                const response = await fetch(API_URL + path);
-                if (response.ok) {
-                    const data = await response.json();
-                    regions[code] = data;
-                    CacheService.saveToCache(path, data, CACHE_DURATION.TWO_WEEKS);
-                } else {
-                    throw new Error(`API request failed with status ${response.status}`);
-                }
-            } catch (error) {
-                console.error(`Failed to fetch region with ${code}:`, error);
-                throw error;
-            }
-        }));
-
-        return regions;
+        return data;
     }
 
     static async fetchSourceInfo(rawData) {
@@ -445,9 +729,19 @@ class DataService {
 
         return Object.values(sourceInfoMap).sort((a, b) => b.frequency - a.frequency);
     }
+
+    static deduplicateSources(sources) {
+        const sourceIds = new Set();
+        return sources.filter(source => {
+            if (sourceIds.has(source.id)) {
+                return false;
+            }
+            sourceIds.add(source.id);
+            return true;
+        });
+    }
 }
 
-// Cache utilities
 class CacheService {
     static saveToCache(key, data, expiryHours, jitter = 0.2) {
         try {
@@ -483,7 +777,6 @@ class CacheService {
     }
 }
 
-// Utility functions
 class Utils {
     static formatSourceList(sources) {
         if (!sources || sources.length === 0) {

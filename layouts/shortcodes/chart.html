@@ -9,8 +9,8 @@
 {{ $timeStart := .Get "time-start" }}
 {{ $timeEnd := .Get "time-end" }}
 
+{{ $region := .Get "region" | default "AF" }}
 {{ $locations := .Get "locations" }}
-{{ $regions := .Get "regions" | default "AF" }}
 
 <div class="max-w-full mx-auto border border-gray-100">
     <div class="chart-container-wrapper flex flex-col md:flex-row">
@@ -34,7 +34,7 @@
             <div class="chart w-full h-[30rem]" data-type="{{ $type }}" data-title="{{ $title }}"
                 data-description="{{ $description }}" data-indicator="{{ $indicator }}"
                 data-time-start="{{ $timeStart }}" data-time-end="{{ $timeEnd }}" data-locations="{{ $locations }}"
-                data-regions="{{ $regions }}">
+                data-region="{{ $region }}">
             </div>
 
             <!-- Data source section -->

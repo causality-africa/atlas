@@ -11,7 +11,17 @@ type: chart
     description="Average number of children a woman would have during reproductive age"
     indicator="fertility-rate"
     unit="live births per woman"
-    time-start="1950"
-    time-end="2031"
+    time-start="1950-01-01"
+    time-end="2030-12-31"
+    region="AF"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"
+>}}
+
+{{< table
+    title="Total Fertility Rate"
+    indicators="fertility-rate"
+    units="births/woman"
+    time-start="1950-01-01"
+    time-end="2030-12-31"
+    region="AF"
 >}}

@@ -1,0 +1,41 @@
+{{ $title := .Get "title" }}
+
+{{ $indicators := .Get "indicators" }}
+{{ $units := .Get "units" }}
+
+{{ $timeStart := .Get "time-start" }}
+{{ $timeEnd := .Get "time-end" }}
+
+{{ $region := .Get "region" | default "AF" }}
+
+<div class="max-w-full mx-auto border border-gray-100 mt-4">
+    <div class="table-container-wrapper flex flex-col">
+        <div class="table-container p-2 w-full">
+            <div class="flex justify-between items-center mb-2">
+                <div class="text-2xl font-bold font-serif">{{ $title }}</div>
+                <select id="year-select" class="border border-gray-300 rounded px-2 py-1 text-sm font-semibold">
+                </select>
+            </div>
+
+            <div class="table-wrapper overflow-x-auto mt-1">
+                <table class="data-table min-w-full divide-y divide-gray-200 mt-0 mb-0"
+                    data-time-start="{{ $timeStart }}" data-time-end="{{ $timeEnd }}"
+                    data-indicators="{{ $indicators }}" data-units="{{ $units }}" data-region="{{ $region }}">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col"
+                                class="px-3 py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                #
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                Country
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

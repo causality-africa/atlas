@@ -11,7 +11,17 @@ type: chart
     description="Average number of daughters a woman would have who survive to reproductive age"
     indicator="net-reproduction-rate"
     unit="surviving daughters per woman"
-    time-start="1950"
-    time-end="2031"
+    time-start="1950-01-01"
+    time-end="2030-12-31"
+    region="AF"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"
+>}}
+
+{{< table
+    title="Net Reproduction Rate"
+    indicators="net-reproduction-rate"
+    units="daughters/woman"
+    time-start="1950-01-01"
+    time-end="2030-12-31"
+    region="AF"
 >}}
