@@ -11,7 +11,17 @@ type: chart
     description="Years required for population to double at current growth rate"
     indicator="population-doubling-time"
     unit="years"
-    time-start="1950"
-    time-end="2031"
+    time-start="1950-01-01"
+    time-end="2030-12-31"
+    region="AF"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"
+>}}
+
+{{< table
+    title="Population Annual Doubling Time"
+    indicators="population-doubling-time"
+    units="years"
+    time-start="1950-01-01"
+    time-end="2030-12-31"
+    region="AF"
 >}}

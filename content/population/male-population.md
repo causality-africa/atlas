@@ -11,7 +11,17 @@ type: chart
     description="Male population as of 1st July"
     indicator="male-population"
     unit="persons"
-    time-start="1950"
-    time-end="2031"
+    time-start="1950-01-01"
+    time-end="2030-12-31"
+    region="AF"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"
+>}}
+
+{{< table
+    title="Male Population"
+    indicators="male-population"
+    units="persons"
+    time-start="1950-01-01"
+    time-end="2030-12-31"
+    region="AF"
 >}}

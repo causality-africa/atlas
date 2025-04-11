@@ -11,7 +11,17 @@ type: chart
     description="Annual deaths of infants under age 1"
     indicator="infant-deaths"
     unit="persons"
-    time-start="1950"
-    time-end="2031"
+    time-start="1950-01-01"
+    time-end="2030-12-31"
+    region="AF"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"
+>}}
+
+{{< table
+    title="Infant Deaths"
+    indicators="infant-deaths"
+    units="persons"
+    time-start="1950-01-01"
+    time-end="2030-12-31"
+    region="AF"
 >}}

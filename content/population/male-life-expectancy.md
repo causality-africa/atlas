@@ -11,7 +11,17 @@ type: chart
     description="Average number of years a newborn male is expected to live"
     indicator="male-life-expectancy"
     unit="years"
-    time-start="1950"
-    time-end="2031"
+    time-start="1950-01-01"
+    time-end="2030-12-31"
+    region="AF"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"
+>}}
+
+{{< table
+    title="Male Life Expectancy at Birth"
+    indicators="male-life-expectancy"
+    units="years"
+    time-start="1950-01-01"
+    time-end="2030-12-31"
+    region="AF"
 >}}
