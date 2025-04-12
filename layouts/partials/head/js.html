@@ -10,14 +10,27 @@
 
 {{- with resources.Get "js/main.js" }}
   {{- if eq hugo.Environment "development" }}
+    <script>
+      window.siteConfig = {
+        apiUrl: "http://127.0.0.1:8080/v1"
+      };
+    </script>
+
     {{- with . | js.Build }}
       <script src="{{ .RelPermalink }}"></script>
     {{- end }}
   {{- else }}
     {{- $opts := dict "minify" true }}
+    <script>
+      window.siteConfig = {
+        apiUrl: "https://api.causality.africa/v1"
+      };
+    </script>
+
     {{- with . | js.Build $opts | fingerprint }}
       <script src="{{ .RelPermalink }}" integrity="{{- .Data.Integrity }}" crossorigin="anonymous"></script>
     {{- end }}
+
     <script defer src="https://cloud.umami.is/script.js" data-website-id="5cc3d527-225b-4d92-b922-5af5e5af0bb0"></script>
   {{- end }}
 {{- end }}
