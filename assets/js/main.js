@@ -369,7 +369,7 @@ class TableVisualizer {
         if (params.has("end")) {
             this.timeEnd = this.tableEl.dataset.timeEnd = params.get("end");
             this.timeEnd = new Date(this.tableEl.dataset.timeEnd);
-            this.currentYear = this.timeEnd.getFullYear();
+            this.currentYear = Math.min(new Date().getFullYear(), this.timeEnd.getFullYear());
             needsUpdate = true;
         }
 
@@ -427,7 +427,7 @@ class TableVisualizer {
         headerRow.appendChild(counterHeader);
 
         const countryHeader = document.createElement("th");
-        countryHeader.textContent = "Country";
+        countryHeader.textContent = "Country / Region";
         countryHeader.className = "px-6 py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider";
         headerRow.appendChild(countryHeader);
 
