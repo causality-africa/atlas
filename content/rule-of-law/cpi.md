@@ -13,7 +13,7 @@ type: chart
     unit="score"
     time-start="2012-01-01"
     time-end="2024-12-31"
-    region="AF"
+    region="AFR"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"
 >}}
 
@@ -23,5 +23,5 @@ type: chart
     units="score"
     time-start="2012-01-01"
     time-end="2024-12-31"
-    region="AF"
+    region="AFR"
 >}}

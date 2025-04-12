@@ -1,12 +1,12 @@
 {{ $title := .Get "title" }}
 
-{{ $indicators := .Get "indicators" }}
-{{ $units := .Get "units" }}
+{{ $indicators := .Get "indicators" | lower }}
+{{ $units := .Get "units" | lower }}
 
 {{ $timeStart := .Get "time-start" }}
 {{ $timeEnd := .Get "time-end" }}
 
-{{ $region := .Get "region" | default "AF" }}
+{{ $region := .Get "region" | default "AF" | upper }}
 
 <div class="max-w-full mx-auto border border-gray-100 mt-4">
     <div class="table-container-wrapper flex flex-col">

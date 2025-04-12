@@ -13,7 +13,7 @@ type: chart
     unit="births per 1000 people"
     time-start="1950-01-01"
     time-end="2030-12-31"
-    region="AF"
+    region="AFR"
     locations="BW,CD,EG,GH,KE,MU,NG,RW,TD,ZA"
 >}}
 
@@ -23,5 +23,5 @@ type: chart
     units="/1000"
     time-start="1950-01-01"
     time-end="2030-12-31"
-    region="AF"
+    region="AFR"
 >}}

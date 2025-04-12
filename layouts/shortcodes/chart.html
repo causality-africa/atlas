@@ -3,14 +3,14 @@
 {{ $title := .Get "title" }}
 {{ $description := .Get "description" }}
 
-{{ $indicator := .Get "indicator" }}
-{{ $unit := .Get "unit" }}
+{{ $indicator := .Get "indicator" | lower }}
+{{ $unit := .Get "unit" | lower }}
 
 {{ $timeStart := .Get "time-start" }}
 {{ $timeEnd := .Get "time-end" }}
 
-{{ $region := .Get "region" | default "AF" }}
-{{ $locations := .Get "locations" }}
+{{ $region := .Get "region" | default "AF" | upper }}
+{{ $locations := .Get "locations" | upper }}
 
 <div class="max-w-full mx-auto border border-gray-100">
     <div class="chart-container-wrapper flex flex-col md:flex-row">
