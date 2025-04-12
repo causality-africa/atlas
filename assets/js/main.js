@@ -1,4 +1,5 @@
-const API_URL = "https://api.causality.africa/v1";
+// const API_URL = "https://api.causality.africa/v1";
+const API_URL = "http://127.0.0.1:8080/v1";
 
 const COLOR_PALETTE = {
     line: [
@@ -103,12 +104,12 @@ class BaseChartVisualizer {
         }
 
         if (params.has("region")) {
-            this.regionCode = this.chartEl.dataset.region = params.get("region");
+            this.regionCode = this.chartEl.dataset.region = params.get("region").toUpperCase();
             needsUpdate = true;
         }
 
         if (params.has("locations")) {
-            this.chartEl.dataset.locations = params.get("locations").split(".").join(",");
+            this.chartEl.dataset.locations = params.get("locations").toUpperCase().split(".").join(",");
             this.locationCodes = this.chartEl.dataset.locations.split(",")
             needsUpdate = true;
         }
@@ -120,8 +121,8 @@ class BaseChartVisualizer {
 
     updateURLParams() {
         URLParams.update({
-            start: this.timeStart.getFullYear(),
-            end: this.timeEnd.getFullYear(),
+            start: this.timeStart.toISOString().split("T")[0],
+            end: this.timeEnd.toISOString().split("T")[0],
             locations: this.locationCodes.join("."),
             region: this.regionCode
         });
@@ -140,30 +141,27 @@ class BaseChartVisualizer {
         const selectedLocationsEl = this.wrapperEl.querySelector(".selected-locations");
         selectedLocationsEl.innerHTML = "";
 
-        await Promise.all(this.region.locations.map(async (location) => {
+        for (const location of [this.region, ...this.region.children]) {
             const container = document.createElement("div");
             container.className = "flex items-center p-3";
 
-            const locations = await DataService.fetchLocations([location.location_code]);
-            const locationName = locations[location.location_code].name;
-
             const checkbox = document.createElement("input");
             checkbox.type = "checkbox";
-            checkbox.id = location.location_code;
-            checkbox.checked = this.locationCodes.includes(location.location_code);
+            checkbox.id = location.code;
+            checkbox.checked = this.locationCodes.includes(location.code);
             checkbox.className = "mr-3 h-4 w-4";
             checkbox.addEventListener("change", async () => await this.updateVisualization());
 
             const label = document.createElement("label");
-            label.htmlFor = location.location_code;
+            label.htmlFor = location.code;
             label.className = "text-sm text-gray-600";
-            label.textContent = locationName;
+            label.textContent = location.name;
 
             container.appendChild(checkbox);
             container.appendChild(label);
 
             selectedLocationsEl.appendChild(container);
-        }));
+        }
     }
 
     setupSourceInfo() {
@@ -522,6 +520,40 @@ class TableVisualizer {
 }
 
 class DataService {
+    static async fetchGeoEntity(code) {
+        const path = "/geo/" + code;
+        let data = CacheService.getFromCache(path);
+        if (data) {
+            return data;
+        }
+
+        try {
+            const response = await fetch(API_URL + path);
+            if (response.ok) {
+                data = await response.json();
+
+                CacheService.saveToCache(path, data, CACHE_DURATION.TWO_WEEKS);
+            } else {
+                throw new Error(`API request failed with status ${response.status}`);
+            }
+        } catch (error) {
+            console.error(`Failed to fetch region with ${code}:`, error);
+            throw error;
+        }
+
+        return data;
+    }
+
+    static async fetchGeoEntities(codes) {
+        const geoEntities = {};
+
+        await Promise.all(codes.map(async (code) => {
+            geoEntities[code] = await DataService.fetchGeoEntity(code);
+        }))
+
+        return geoEntities;
+    }
+
     static async fetchIndicatorData(
         indicator,
         timeStart,
@@ -538,7 +570,7 @@ class DataService {
             dataset: result.datasetByIndicator[indicator],
             sources: result.sources,
             region: result.region,
-            locations: result.locations,
+            geoEntities: result.geoEntities,
         }
     }
 
@@ -548,24 +580,20 @@ class DataService {
         timeEnd,
         regionCode,
     ) {
-        const region = await this.fetchRegion(regionCode);
+        const region = await this.fetchGeoEntity(regionCode);
+        const geoEntities = [regionCode, ...region.children.map((entity) => entity.code)];
 
-        const locationCodes = region.locations.map((loc) => loc.location_code);
-        const locations = await this.fetchLocations(locationCodes);
-
-        const batchSize = 50;
-        const locationBatches = [];
-        for (let i = 0; i < locationCodes.length; i += batchSize) {
-            locationBatches.push(locationCodes.slice(i, i + batchSize));
+        const batches = [];
+        for (let i = 0; i < geoEntities.length; i += 50) {
+            batches.push(geoEntities.slice(i, i + 50));
         }
 
         let allSources = [];
-
         const datasetByIndicator = {};
         for (const indicator of indicators) {
             let datasetForIndicator = [];
 
-            for (const batch of locationBatches) {
+            for (const batch of batches) {
                 const result = await this.fetchDataPoints(
                     indicator,
                     timeStart,
@@ -587,15 +615,15 @@ class DataService {
             datasetByIndicator,
             sources: dedupedSources,
             region,
-            locations,
+            geoEntities,
         };
     }
 
-    static async fetchDataPoints(indicator, start, end, locationCodes) {
-        const locationsStr = locationCodes.join(",");
+    static async fetchDataPoints(indicator, start, end, geoCodes) {
+        const geoCodesStr = geoCodes.join(",");
         const startStr = start.toISOString().split("T")[0];
         const endStr = end.toISOString().split("T")[0];
-        const queryStr = `/query?indicator=${indicator}&start=${startStr}&end=${endStr}&locations=${locationsStr}`;
+        const queryStr = `/query?indicator=${indicator}&start=${startStr}&end=${endStr}&geo_codes=${geoCodesStr}`;
 
         const data = CacheService.getFromCache(queryStr);
         if (data) {
@@ -603,7 +631,7 @@ class DataService {
         }
 
         try {
-            const locations = await this.fetchLocations(locationCodes);
+            const geoEntities = await DataService.fetchGeoEntities(geoCodes);
             const response = await fetch(API_URL + queryStr);
 
             if (!response.ok) {
@@ -613,13 +641,28 @@ class DataService {
             const rawData = await response.json();
             const sources = await this.fetchSourceInfo(rawData);
 
-            const dataset = Object.entries(rawData).map(([locationCode, dataPoints]) => ({
-                code: locationCode,
-                name: locations[locationCode].name,
-                data: dataPoints.map(point => point.numeric_value),
-            }));
+            const startYear = start.getFullYear();
+            const endYear = end.getFullYear();
+            const yearCount = endYear - startYear + 1;
+            const dataset = Object.entries(rawData).map(([geoCode, dataPoints]) => {
+                const alignedData = Array(yearCount).fill(null);
 
-            const result = { dataset, sources, locations };
+                dataPoints.forEach(point => {
+                    const pointYear = new Date(point.date).getFullYear();
+                    const index = pointYear - startYear;
+                    if (index >= 0 && index < yearCount) {
+                        alignedData[index] = point.numeric_value;
+                    }
+                });
+
+                return {
+                    code: geoCode,
+                    name: geoEntities[geoCode].name,
+                    data: alignedData
+                };
+            });
+
+            const result = { dataset, sources, geoEntities };
 
             CacheService.saveToCache(queryStr, result, CACHE_DURATION.ONE_DAY);
 
@@ -628,60 +671,6 @@ class DataService {
             console.error("Error fetching data:", error);
             throw error;
         }
-    }
-
-    static async fetchLocations(locationCodes) {
-        const locations = {};
-        await Promise.all(locationCodes.map(async (code) => {
-            const path = "/locations/" + code;
-            const data = CacheService.getFromCache(path);
-
-            if (data) {
-                locations[code] = data;
-                return;
-            }
-
-            try {
-                const response = await fetch(API_URL + path);
-                if (response.ok) {
-                    const data = await response.json();
-                    locations[code] = data;
-
-                    CacheService.saveToCache(path, data, CACHE_DURATION.TWO_WEEKS);
-                } else {
-                    throw new Error(`API request failed with status ${response.status}`);
-                }
-            } catch (error) {
-                console.error(`Failed to fetch location with ${code}:`, error);
-                throw error;
-            }
-        }));
-
-        return locations;
-    }
-
-    static async fetchRegion(code) {
-        const path = "/regions/" + code;
-        let data = CacheService.getFromCache(path);
-        if (data) {
-            return data;
-        }
-
-        try {
-            const response = await fetch(API_URL + path);
-            if (response.ok) {
-                data = await response.json();
-
-                CacheService.saveToCache(path, data, CACHE_DURATION.TWO_WEEKS);
-            } else {
-                throw new Error(`API request failed with status ${response.status}`);
-            }
-        } catch (error) {
-            console.error(`Failed to fetch region with ${code}:`, error);
-            throw error;
-        }
-
-        return data;
     }
 
     static async fetchSourceInfo(rawData) {
@@ -705,7 +694,7 @@ class DataService {
                 if (sourceData) {
                     sourceInfoMap[sourceId] = {
                         ...sourceData,
-                        year: new Date(sourceData.date).getFullYear(),
+                        year: new Date(sourceData.last_updated).getFullYear(),
                         frequency: sourceFrequency[sourceId]
                     };
                     return;
@@ -716,7 +705,7 @@ class DataService {
                     const sourceData = await response.json();
                     sourceInfoMap[sourceId] = {
                         ...sourceData,
-                        year: new Date(sourceData.date).getFullYear(),
+                        year: new Date(sourceData.last_updated).getFullYear(),
                         frequency: sourceFrequency[sourceId]
                     };
 
@@ -781,6 +770,10 @@ class Utils {
     static formatSourceList(sources) {
         if (!sources || sources.length === 0) {
             return "...";
+        }
+
+        if (sources.length > 1) {
+            sources = sources.filter((source) => source.name != "Derived")
         }
 
         const formatSource = (source) => `${source.name} (${source.year})`;
