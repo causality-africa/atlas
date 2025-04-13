@@ -1,5 +1,5 @@
 {{ define "main" }}
-<main class="max-w-7xl mx-auto py-6 px-4 prose prose-lg">
+<main class="max-w-7xl mx-auto py-6 px-4 prose prose-slate">
   <h2 class="text-4xl font-bold">{{ .Title }}</h1>
 
     {{ $sortedCharts := (where .Pages "Type" "chart").ByTitle }}
