@@ -1,10 +1,10 @@
 <div class="bg-gray-50 py-12">
   <div class="max-w-7xl mx-auto px-4">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
       <!-- Economy -->
       <div>
-        <h3 class="text-lg font-semibold mb-4">Economy</h3>
-        <ul class="space-y-2">
+        <h3 class="font-semibold mb-4">Economy</h3>
+        <ul class="space-y-2 text-sm">
           <li>
             <a href='{{ "economic-growth/" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Economic Growth</a>
             <span
@@ -46,8 +46,8 @@
 
       <!-- Industry -->
       <div>
-        <h3 class="text-lg font-semibold mb-4">Industry</h3>
-        <ul class="space-y-2">
+        <h3 class="font-semibold mb-4">Industry</h3>
+        <ul class="space-y-2 text-sm">
           <li>
             <a href='{{ "manufacturing/" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Manufacturing</a>
             <span
@@ -88,8 +88,8 @@
 
       <!-- Health -->
       <div>
-        <h3 class="text-lg font-semibold mb-4">Health</h3>
-        <ul class="space-y-2">
+        <h3 class="font-semibold mb-4">Health</h3>
+        <ul class="space-y-2 text-sm">
           <li>
             <a href='{{ "healthcare-access/" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Healthcare
               Access</a>
@@ -131,8 +131,8 @@
 
       <!-- Infrastructure -->
       <div>
-        <h3 class="text-lg font-semibold mb-4">Infrastructure</h3>
-        <ul class="space-y-2">
+        <h3 class="font-semibold mb-4">Infrastructure</h3>
+        <ul class="space-y-2 text-sm">
           <li>
             <a href='{{ "energy/" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Energy</a>
             <span
@@ -173,8 +173,8 @@
 
       <!-- Governance -->
       <div>
-        <h3 class="text-lg font-semibold mb-4">Governance</h3>
-        <ul class="space-y-2">
+        <h3 class="font-semibold mb-4">Governance</h3>
+        <ul class="space-y-2 text-sm">
           <li>
             <a href='{{ "public-finance/" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Public Finance</a>
             <span
@@ -218,8 +218,8 @@
 
       <!-- Human Development -->
       <div>
-        <h3 class="text-lg font-semibold mb-4">Human Development</h3>
-        <ul class="space-y-2">
+        <h3 class="font-semibold mb-4">Human Development</h3>
+        <ul class="space-y-2 text-sm">
           <li>
             <a href='{{ "education/" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Education</a>
             <span
@@ -260,8 +260,8 @@
 
       <!-- Demographics -->
       <div>
-        <h3 class="text-lg font-semibold mb-4">Demographics</h3>
-        <ul class="space-y-2">
+        <h3 class="font-semibold mb-4">Demographics</h3>
+        <ul class="space-y-2 text-sm">
           <li>
             <a href='{{ "population/" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Population</a>
             <span
@@ -302,8 +302,8 @@
 
       <!-- Environment -->
       <div>
-        <h3 class="text-lg font-semibold mb-4">Environment</h3>
-        <ul class="space-y-2">
+        <h3 class="font-semibold mb-4">Environment</h3>
+        <ul class="space-y-2 text-sm">
           <li>
             <a href='{{ "climate/" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Climate</a>
             <span
@@ -349,17 +349,17 @@
 <!-- Regular footer content -->
 <div class="bg-gray-800 text-white">
   <div class="max-w-7xl mx-auto px-4 py-8">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
       <!-- Causality -->
       <div>
-        <a href='{{ "//" | relLangURL }}' class="text-lg font-semibold mb-4">{{ site.Title | upper }}</a>
-        <p class="text-gray-300">{{ .Site.Params.description }}</p>
+        <a href='{{ "//" | relLangURL }}' class="font-semibold mb-4">{{ site.Title | upper }}</a>
+        <p class="text-gray-300 pt-4">{{ .Site.Params.description }}</p>
       </div>
 
       <!-- Platform -->
       <div>
-        <h4 class="text-lg font-semibold mb-4">PLATFORM</h4>
-        <ul class="space-y-2">
+        <h4 class="font-semibold mb-4">PLATFORM</h4>
+        <ul class="space-y-2 text-sm">
           <li>
             <a href='{{ "articles/" | relLangURL }}' class="text-gray-300 hover:text-white">Articles</a>
           </li>
@@ -377,8 +377,8 @@
 
       <!-- About -->
       <div>
-        <h4 class="text-lg font-semibold mb-4">ABOUT</h4>
-        <ul class="space-y-2">
+        <h4 class="font-semibold mb-4">ABOUT</h4>
+        <ul class="space-y-2 text-sm">
           <li>
             <a href='{{ "about/" | relLangURL }}' class="text-gray-300 hover:text-white">About Us</a>
           </li>
@@ -396,8 +396,8 @@
 
       <!-- Social -->
       <div>
-        <h4 class="text-lg font-semibold mb-4">FOLLOW US</h4>
-        <div class="flex space-x-4">
+        <h4 class="font-semibold mb-4">FOLLOW US</h4>
+        <div class="flex space-x-4 text-sm">
           <a href="https://bsky.app/profile/causality.africa" class="text-gray-300 hover:text-white">Bluesky</a>
           <a href="https://github.com/causality-africa" class="text-gray-300 hover:text-white">GitHub</a>
         </div>
@@ -405,9 +405,8 @@
     </div>
 
     <!-- Copyright -->
-    <div class="mt-8 pt-8 border-t border-gray-700 text-center text-gray-300">
-      <p>&copy; {{ now.Year }} {{ .Site.Title }} | <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
-      </p>
+    <div class="mt-8 pt-8 border-t border-gray-700 text-center text-gray-300 text-sm">
+      &copy; {{ now.Year }} {{ .Site.Title }} | <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
     </div>
   </div>
 </div>
