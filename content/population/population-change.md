@@ -2,7 +2,7 @@
 title: "Population Change"
 summary: "Total change in population"
 date: 2025-04-05T14:19:52+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

@@ -2,7 +2,7 @@
 title: "Female Life Expectancy at Age 80"
 summary: "Average number of additional years an 80-year-old female is expected to live"
 date: 2025-04-05T14:23:29+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

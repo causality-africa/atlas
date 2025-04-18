@@ -2,7 +2,7 @@
 title: "Births by Women Aged 15-19"
 summary: "Annual births to women aged 15 to 19"
 date: 2025-04-05T14:20:26+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

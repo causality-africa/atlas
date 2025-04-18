@@ -2,7 +2,7 @@
 title: "Female Mortality Before Age 40"
 summary: "Probability of female dying before age 40 per 1000 female live births"
 date: 2025-04-05T14:24:46+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

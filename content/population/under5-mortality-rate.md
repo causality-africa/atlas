@@ -2,7 +2,7 @@
 title: "Mortality Before Age 5"
 summary: "Deaths of children under age 5 per 1000 live births"
 date: 2025-04-05T14:24:11+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

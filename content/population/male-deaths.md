@@ -2,7 +2,7 @@
 title: "Male Deaths"
 summary: "Annual male deaths"
 date: 2025-04-05T14:21:25+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

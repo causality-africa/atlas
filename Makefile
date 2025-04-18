@@ -13,9 +13,9 @@ article:
 	hugo new --kind article content/articles/$(filter-out $@,$(MAKECMDGOALS)).md
 
 
-.PHONY: line-chart
-line-chart:
-	hugo new --kind line-chart content/$(filter-out $@,$(MAKECMDGOALS)).md
+.PHONY: indicator
+indicator:
+	hugo new --kind indicator content/$(filter-out $@,$(MAKECMDGOALS)).md
 
 
 %:

@@ -2,7 +2,7 @@
 title: "Infant Deaths"
 summary: "Annual deaths of infants under age 1"
 date: 2025-04-05T14:23:38+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

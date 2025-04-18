@@ -2,7 +2,7 @@
 title: "Crude Birth Rate"
 summary: "Annual births per 1000 people"
 date: 2025-04-05T14:20:35+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

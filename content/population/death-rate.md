@@ -2,7 +2,7 @@
 title: "Crude Death Rate"
 summary: "Annual deaths per 1000 people"
 date: 2025-04-05T14:21:43+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

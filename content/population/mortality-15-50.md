@@ -2,7 +2,7 @@
 title: "Mortality Between Age 15 and 50"
 summary: "Probability of dying between ages 15 and 50 per 1000 alive at age 15"
 date: 2025-04-05T14:25:21+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

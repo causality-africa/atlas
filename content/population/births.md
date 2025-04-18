@@ -2,7 +2,7 @@
 title: "Births"
 summary: "Total annual births"
 date: 2025-04-05T14:20:18+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

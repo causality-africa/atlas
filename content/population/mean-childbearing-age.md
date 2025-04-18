@@ -2,7 +2,7 @@
 title: "Mean Age at Childbearing"
 summary: "Average age of mothers at birth of their children"
 date: 2025-04-05T14:21:01+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart
