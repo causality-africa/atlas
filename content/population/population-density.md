@@ -2,7 +2,7 @@
 title: "Population Density"
 summary: "Population density as of 1st July"
 date: 2025-04-05T14:19:04+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

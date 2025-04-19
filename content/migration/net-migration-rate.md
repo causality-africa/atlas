@@ -2,7 +2,7 @@
 title: "Net Migration Rate"
 summary: "Net migration per 1000 people"
 date: 2025-04-05T14:26:28+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

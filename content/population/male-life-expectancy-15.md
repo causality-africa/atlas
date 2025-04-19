@@ -2,7 +2,7 @@
 title: "Male Life Expectancy at Age 15"
 summary: "Average number of additional years a 15-year-old male is expected to live"
 date: 2025-04-05T14:22:22+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

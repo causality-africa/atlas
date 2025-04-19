@@ -2,7 +2,7 @@
 title: "Population Annual Doubling Time"
 summary: "Years required for population to double at current growth rate"
 date: 2025-04-05T14:20:09+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

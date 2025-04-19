@@ -2,7 +2,7 @@
 title: "Female Mortality Before Age 60"
 summary: "Probability of female dying before age 60 per 1000 female live births"
 date: 2025-04-05T14:25:13+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

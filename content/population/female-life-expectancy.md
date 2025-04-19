@@ -2,7 +2,7 @@
 title: "Female Life Expectancy at Birth"
 summary: "Average number of years a newborn female is expected to live"
 date: 2025-04-05T14:22:03+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

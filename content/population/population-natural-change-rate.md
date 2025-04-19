@@ -2,7 +2,7 @@
 title: "Population Natural Change Rate"
 summary: "Rate of natural population change"
 date: 2025-04-05T14:19:43+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

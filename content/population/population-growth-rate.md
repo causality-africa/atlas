@@ -2,7 +2,7 @@
 title: "Population Growth Rate"
 summary: "Annual population growth rate"
 date: 2025-04-05T14:20:01+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

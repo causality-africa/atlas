@@ -2,7 +2,7 @@
 title: "Female Population"
 summary: "Female population as of 1st July"
 date: 2025-04-05T14:18:55+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

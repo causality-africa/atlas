@@ -2,7 +2,7 @@
 title: "Corruption Perceptions Index"
 summary: "Perceived levels of public sector corruption"
 date: 2025-04-06T21:12:04+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

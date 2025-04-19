@@ -2,7 +2,7 @@
 title: "Population Natural Change"
 summary: "Births minus Deaths"
 date: 2025-04-05T14:19:34+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

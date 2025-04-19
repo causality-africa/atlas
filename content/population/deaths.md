@@ -2,7 +2,7 @@
 title: "Deaths"
 summary: "Total annual deaths"
 date: 2025-04-05T14:21:18+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

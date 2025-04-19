@@ -2,7 +2,7 @@
 title: "Live Births Surviving to Age 1"
 summary: "Annual births who survive to age 1"
 date: 2025-04-05T14:23:56+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

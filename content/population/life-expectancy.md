@@ -2,7 +2,7 @@
 title: "Life Expectancy at Birth"
 summary: "Average number of years a newborn is expected to live"
 date: 2025-04-03T20:02:30+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

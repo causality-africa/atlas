@@ -6,7 +6,8 @@
         <h3 class="font-semibold mb-4">Economy</h3>
         <ul class="space-y-2 text-sm">
           <li>
-            <a href='{{ "economic-growth/" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Economic Growth</a>
+            <a href='{{ "economic-growth/" | relLangURL }}' class="text-gray-600 hover:text-gray-900">Economic
+              Growth</a>
             <span
               class="inline-block rounded-full bg-gray-300 text-gray-800 text-xs px-2 py-0.5 min-w-[1.5rem] text-center">
               {{ len (site.GetPage "section" "economic-growth").Pages }}
@@ -351,13 +352,13 @@
   <div class="max-w-7xl mx-auto px-4 py-8">
     <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
       <!-- Causality -->
-      <div>
+      <div class="order-1 md:order-1">
         <a href='{{ "//" | relLangURL }}' class="font-semibold mb-4">{{ site.Title | upper }}</a>
-        <p class="text-gray-300 pt-4">{{ .Site.Params.description }}</p>
+        <p class="text-gray-300 text-sm pt-4">{{ .Site.Params.description }}</p>
       </div>
 
       <!-- Platform -->
-      <div>
+      <div class="order-3 md:order-2">
         <h4 class="font-semibold mb-4">PLATFORM</h4>
         <ul class="space-y-2 text-sm">
           <li>
@@ -376,7 +377,7 @@
       </div>
 
       <!-- About -->
-      <div>
+      <div class="order-4 md:order-3">
         <h4 class="font-semibold mb-4">ABOUT</h4>
         <ul class="space-y-2 text-sm">
           <li>
@@ -395,7 +396,7 @@
       </div>
 
       <!-- Social -->
-      <div>
+      <div class="order-2 md:order-4">
         <h4 class="font-semibold mb-4">FOLLOW US</h4>
         <div class="flex space-x-4 text-sm">
           <a href="https://bsky.app/profile/causality.africa" class="text-gray-300 hover:text-white">Bluesky</a>

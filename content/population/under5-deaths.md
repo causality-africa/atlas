@@ -2,7 +2,7 @@
 title: "Deaths Under Age 5"
 summary: "Annual deaths of children under age 5"
 date: 2025-04-05T14:24:04+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

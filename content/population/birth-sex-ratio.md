@@ -2,7 +2,7 @@
 title: "Sex Ratio at Birth"
 summary: "Ratio of male to female births"
 date: 2025-04-05T14:21:10+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

@@ -2,7 +2,7 @@
 title: "Total Fertility Rate"
 summary: "Average number of children a woman would have during reproductive age"
 date: 2025-04-05T14:20:44+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart

@@ -2,7 +2,7 @@
 title: "Life Expectancy at Age 65"
 summary: "Average number of additional years a 65-year-old is expected to live"
 date: 2025-04-05T14:22:39+03:00
-type: chart
+type: indicator
 ---
 
 {{< chart
