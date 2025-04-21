@@ -1,6 +1,6 @@
 {{ define "main" }}
 <main class="max-w-7xl mx-auto py-6 px-4 prose prose-slate">
-  <h2 class="text-4xl font-bold">{{ .Title }}</h1>
+  <h1 class="text-4xl font-bold" data-pagefind-meta="title">{{ .Title }}</h1>
 
     {{ $sortedIndicators := (where .Pages "Type" "indicator").ByTitle }}
     {{ if $sortedIndicators }}
@@ -70,6 +70,5 @@
     {{ else }}
       <p class="italic text-gray-500">This section is left as an exercise for the reader :).</p>
     {{ end }}
-
 </main>
 {{ end }}

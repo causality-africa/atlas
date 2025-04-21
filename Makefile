@@ -6,6 +6,7 @@ serve:
 .PHONY: build
 build:
 	hugo --minify
+	pnpm pagefind --site "public"
 
 
 .PHONY: article
