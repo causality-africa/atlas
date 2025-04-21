@@ -40,10 +40,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         await visualizer.initialize();
     }
 
-    const tableEls = document.querySelectorAll(".data-table");
-    for (const tableEl of tableEls) {
-        const tableVisualizer = new TableVisualizer(tableEl);
-        await tableVisualizer.initialize();
+    const tableWrapperEls = document.querySelectorAll(".table-container-wrapper");
+    for (const wrapperEl of tableWrapperEls) {
+        const tableEl = wrapperEl.querySelector(".table-container .gridjs-container");
+
+        const visualizer = new TableVisualizer(wrapperEl, tableEl);
+        await visualizer.initialize();
     }
 });
 
@@ -82,7 +84,7 @@ class BaseChartVisualizer {
         this.syncFromURL();
 
         await this.fetchData();
-        await this.setupUI();
+        this.setupUI();
         await this.render();
     }
 
@@ -131,12 +133,13 @@ class BaseChartVisualizer {
         throw new Error("fetchData method must be implemented by subclass");
     }
 
-    async setupUI() {
-        await this.setupLocationSelectors();
+    setupUI() {
+        this.setupLocationSelectors();
         this.setupExportButton();
+        this.setupClearSelectionButton();
     }
 
-    async setupLocationSelectors() {
+    setupLocationSelectors() {
         const selectedLocationsEl = this.wrapperEl.querySelector(".selected-locations");
         selectedLocationsEl.innerHTML = "";
 
@@ -148,7 +151,7 @@ class BaseChartVisualizer {
             checkbox.type = "checkbox";
             checkbox.id = location.code;
             checkbox.checked = this.locationCodes.includes(location.code);
-            checkbox.className = "mr-3 h-4 w-4";
+            checkbox.className = "location-checkbox mr-3 h-4 w-4";
             checkbox.addEventListener("change", async () => await this.updateVisualization());
 
             const label = document.createElement("label");
@@ -177,6 +180,18 @@ class BaseChartVisualizer {
         }
     }
 
+    setupClearSelectionButton() {
+        const clearSelectionBtn = this.wrapperEl.querySelector(".clear-selection");
+
+        if (clearSelectionBtn) {
+            clearSelectionBtn.addEventListener("click", async () => {
+                const checkboxes = this.wrapperEl.querySelectorAll(".location-checkbox");
+                checkboxes.forEach(checkbox => checkbox.checked = false);
+                await this.updateVisualization();
+            });
+        }
+    }
+
     export() {
         const chartContainerEl = this.wrapperEl.querySelector(".chart-container");
         const renderingOptions = { pixelRatio: 5, backgroundColor: "#fff" };
@@ -193,12 +208,7 @@ class BaseChartVisualizer {
 
     getSelectedLocations() {
         const selectedLocationsEl = this.wrapperEl.querySelector(".selected-locations");
-
-        const selected = Array.from(selectedLocationsEl.querySelectorAll("input:checked")).map(input => input.id);
-        if (selected.length == 0) {
-            return this.locationCodes;
-        }
-        return selected;
+        return Array.from(selectedLocationsEl.querySelectorAll(".location-checkbox:checked")).map(input => input.id);
     }
 
     async render() {
@@ -323,14 +333,15 @@ class LineChartVisualizer extends BaseChartVisualizer {
 
 
 class TableVisualizer {
-    constructor(tableEl) {
+    constructor(wrapperEl, tableEl) {
+        this.wrapperEl = wrapperEl;
         this.tableEl = tableEl;
 
         this.sources = [];
         this.datasetByIndicator = {};
 
         this.indicators = this.tableEl.dataset.indicators.split(",");
-        this.units = this.tableEl.dataset.units.split(",")
+        this.units = this.tableEl.dataset.units.split(",");
 
         this.timeStart = new Date(this.tableEl.dataset.timeStart);
         this.timeEnd = new Date(this.tableEl.dataset.timeEnd);
@@ -339,20 +350,20 @@ class TableVisualizer {
 
         this.locations = {};
         this.regionCode = this.tableEl.dataset.region;
+        this.grid = null;
 
         document.addEventListener("urlParamsChanged", () => this.syncFromURL());
     }
 
     async initialize() {
         this.syncFromURL();
-
         await this.setupYearSelector();
         await this.fetchData();
-        this.renderTable();
+        this.initializeGrid();
 
         this.yearSelect.addEventListener("change", () => {
             this.currentYear = parseInt(this.yearSelect.value);
-            this.renderTable();
+            this.updateGridData();
         });
     }
 
@@ -378,8 +389,8 @@ class TableVisualizer {
             needsUpdate = true;
         }
 
-        if (needsUpdate && this.tableEl.querySelector("tbody")) {
-            this.fetchData().then(() => this.renderTable());
+        if (needsUpdate && this.grid) {
+            this.fetchData().then(() => this.updateGridData());
         }
     }
 
@@ -417,36 +428,52 @@ class TableVisualizer {
         }
     }
 
-    renderTable() {
-        const headerRow = this.tableEl.querySelector("thead tr");
-        headerRow.innerHTML = "";
+    initializeGrid() {
+        const gridWrapper = document.createElement("div");
+        gridWrapper.id = "grid-wrapper";
+        this.tableEl.parentNode.replaceChild(gridWrapper, this.tableEl);
 
-        const counterHeader = document.createElement("th");
-        counterHeader.textContent = "#";
-        counterHeader.className = "px-3 py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider";
-        headerRow.appendChild(counterHeader);
-
-        const countryHeader = document.createElement("th");
-        countryHeader.textContent = "Country / Region";
-        countryHeader.className = "px-6 py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider";
-        headerRow.appendChild(countryHeader);
-
+        const columns = [
+            { id: "country", name: "Country / Region" }
+        ];
         this.indicators.forEach((column, index) => {
-            const th = document.createElement("th");
-            th.textContent = `${this.formatColumnName(column)} (${this.units[index]})`;
-            th.className = "px-6 py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider";
-            headerRow.appendChild(th);
+            columns.push({
+                id: column,
+                name: `${this.formatColumnName(column)} (${this.units[index]})`,
+                formatter: (cell) => this.formatValue(cell)
+            });
         });
 
-        const tbody = this.tableEl.querySelector("tbody");
-        tbody.innerHTML = "";
 
+        this.grid = new gridjs.Grid({
+            columns: columns,
+            data: this.prepareGridData(),
+            search: true,
+            sort: true,
+            className: {
+                table: "min-w-full",
+                th: "uppercase",
+                td: "text-sm"
+            },
+            style: {
+                table: {
+                    "white-space": "nowrap"
+                }
+            },
+            language: {
+                search: {
+                    placeholder: "Search"
+                }
+            }
+        }).render(gridWrapper);
+    }
+
+    prepareGridData() {
         const yearIndex = this.currentYear - this.timeStart.getFullYear();
-
         const baseDataset = this.datasetByIndicator[this.indicators[0]] || [];
+        const gridData = [];
 
         const dataByLocationAndIndicator = {};
-
         this.indicators.forEach(column => {
             dataByLocationAndIndicator[column] = {};
             (this.datasetByIndicator[column] || []).forEach(item => {
@@ -454,53 +481,44 @@ class TableVisualizer {
             });
         });
 
-        baseDataset.forEach((country, index) => {
-            const tr = document.createElement("tr");
-            tr.className = index % 2 === 0 ? "bg-white" : "bg-gray-50";
-            tr.classList.add("hover:bg-gray-100");
-
-            const counterCell = document.createElement("td");
-            counterCell.textContent = index + 1;
-            counterCell.className = "px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900";
-            tr.appendChild(counterCell);
-
-            const countryCell = document.createElement("td");
-            countryCell.textContent = country.name;
-            countryCell.className = "px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900";
-            tr.appendChild(countryCell);
+        baseDataset.forEach((country) => {
+            const rowData = {
+                country: country.name
+            };
 
             this.indicators.forEach(column => {
-                const td = document.createElement("td");
-                td.className = "px-6 py-4 whitespace-nowrap text-sm text-gray-900";
-
                 const dataForIndicator = dataByLocationAndIndicator[column][country.code];
                 const value = dataForIndicator ? dataForIndicator[yearIndex] : null;
-
-                td.textContent = this.formatValue(value);
-                tr.appendChild(td);
+                rowData[column] = value;
             });
 
-            tbody.appendChild(tr);
+            gridData.push(rowData);
         });
 
-        const sourcesEl = document.querySelector(".table-sources");
-        if (sourcesEl) {
-            sourcesEl.textContent = Utils.formatSourceList(this.sources);
+        return gridData;
+    }
+
+    updateGridData() {
+        if (this.grid) {
+            this.grid.updateConfig({
+                data: this.prepareGridData()
+            }).forceRender();
         }
     }
 
     renderErrorState() {
-        const tbody = this.tableEl.querySelector("tbody");
-        tbody.innerHTML = "";
+        if (this.grid) {
+            this.grid.updateConfig({
+                data: [],
+                pagination: false
+            }).forceRender();
 
-        const tr = document.createElement("tr");
-        const td = document.createElement("td");
-        td.colSpan = this.indicators.length + 1;
-        td.className = "px-6 py-4 text-center text-sm text-red-500";
-        td.textContent = "Error loading data. Please try again later.";
-
-        tr.appendChild(td);
-        tbody.appendChild(tr);
+            const gridWrapper = this.tableEl.getElementById("grid-wrapper");
+            const errorMsg = document.createElement("div");
+            errorMsg.className = "text-center text-red-500 py-4";
+            errorMsg.textContent = "Error loading data. Please try again later.";
+            gridWrapper.appendChild(errorMsg);
+        }
     }
 
     formatColumnName(column) {
@@ -643,23 +661,25 @@ class DataService {
             const startYear = start.getFullYear();
             const endYear = end.getFullYear();
             const yearCount = endYear - startYear + 1;
-            const dataset = Object.entries(rawData).map(([geoCode, dataPoints]) => {
-                const alignedData = Array(yearCount).fill(null);
+            const dataset = Object.entries(rawData)
+                .filter(([_, dataPoints]) => dataPoints.length > 0)
+                .map(([geoCode, dataPoints]) => {
+                    const alignedData = Array(yearCount).fill(null);
 
-                dataPoints.forEach(point => {
-                    const pointYear = new Date(point.date).getFullYear();
-                    const index = pointYear - startYear;
-                    if (index >= 0 && index < yearCount) {
-                        alignedData[index] = point.numeric_value;
-                    }
+                    dataPoints.forEach(point => {
+                        const pointYear = new Date(point.date).getFullYear();
+                        const index = pointYear - startYear;
+                        if (index >= 0 && index < yearCount) {
+                            alignedData[index] = point.numeric_value;
+                        }
+                    });
+
+                    return {
+                        code: geoCode,
+                        name: geoEntities[geoCode].name,
+                        data: alignedData
+                    };
                 });
-
-                return {
-                    code: geoCode,
-                    name: geoEntities[geoCode].name,
-                    data: alignedData
-                };
-            });
 
             const result = { dataset, sources, geoEntities };
 
@@ -744,8 +764,8 @@ class CacheService {
         } catch (error) {
             if (error instanceof DOMException &&
                 (error.code === 22 || error.code === 1014 ||
-                    error.name === 'QuotaExceededError' ||
-                    error.name === 'NS_ERROR_DOM_QUOTA_REACHED')) {
+                    error.name === "QuotaExceededError" ||
+                    error.name === "NS_ERROR_DOM_QUOTA_REACHED")) {
                 localStorage.clear();
             }
         }

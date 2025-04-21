@@ -69,7 +69,15 @@
 
             <!-- Country selection panel -->
             <div class="selection-panel mt-2">
-                <h2 class="text-xs text-gray-600 font-semibold py-2">SELECT COUNTRIES AND REGIONS</h2>
+                <h2 class="text-xs text-gray-600 font-semibold pt-2">SELECT COUNTRIES AND REGIONS</h2>
+
+                <div class="flex mb-2">
+                    <button
+                        class="clear-selection w-full px-3 py-1 text-xs border border-gray-300 rounded-md hover:bg-gray-100 cursor-pointer">
+                        <i class="fa-solid fa-times"></i>&nbsp;
+                        CLEAR SELECTION
+                    </button>
+                </div>
 
                 <!-- Selected locations section -->
                 <div class="selected-locations h-[28rem] overflow-y-auto divide-y divide-gray-200">

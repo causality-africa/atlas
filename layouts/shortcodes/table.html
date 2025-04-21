@@ -17,24 +17,8 @@
                 </select>
             </div>
 
-            <div class="table-wrapper overflow-x-auto mt-1">
-                <table class="data-table min-w-full divide-y divide-gray-200 mt-0 mb-0"
-                    data-time-start="{{ $timeStart }}" data-time-end="{{ $timeEnd }}"
-                    data-indicators="{{ $indicators }}" data-units="{{ $units }}" data-region="{{ $region }}">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col"
-                                class="px-3 py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                #
-                            </th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                Country / Region
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200"></tbody>
-                </table>
+            <div class="gridjs-container" data-time-start="{{ $timeStart }}" data-time-end="{{ $timeEnd }}"
+                data-indicators="{{ $indicators }}" data-units="{{ $units }}" data-region="{{ $region }}">
             </div>
         </div>
     </div>

@@ -15,3 +15,8 @@ article ul,
 article ol {
     @apply md:max-w-[65%];
 }
+
+.footnotes p,
+.footnotes ol {
+    @apply md:max-w-[100%];
+}
