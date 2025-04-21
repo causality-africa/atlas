@@ -1,0 +1,6 @@
+{{ $lastmod := .Get "date" | default (.Page.Lastmod.Format "January 2, 2006") }}
+{{ $text := .Get "text" | default "Last updated" }}
+
+<p class="text-gray-600 text-sm italic">
+  {{ $text }} {{ $lastmod }}.
+</p>
