@@ -5,6 +5,15 @@
 </div>
 
 <main class="max-w-7xl mx-auto py-8 px-4 prose prose-slate">
+  <!-- Search -->
+  <div id="search"></div>
+  <script>
+    window.addEventListener("DOMContentLoaded", (event) => {
+      new PagefindUI({ element: "#search", showSubResults: true });
+    });
+  </script>
+
+  <!-- Articles -->
   {{ $articles := where .Site.RegularPages "Type" "article" }}
   {{ if $articles }}
   <ul class="space-y-4 list-none pl-0">
